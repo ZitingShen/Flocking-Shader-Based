@@ -1,7 +1,7 @@
 #ifndef MY_MATRIX
 #define MY_MATRIX
 
-namespace MyMatrix{
+
   typedef struct _vec2{
     float data[2];
   } vec2;
@@ -25,8 +25,24 @@ namespace MyMatrix{
   typedef struct _mat4{
     float data[16];
   } mat4;
-}
+
+  template <typename T>
+  class vec{
+    private:
+      T* local;
+      int width;
+    public:
+      vec(int width, int height, float* dada);
+      float determinant();
+      T* transpose();
+      T* inverse();
+      float trace();
+      vec operator+ (const vec&);
+      vec operator- (const vec&);
+      vec operator= (const vec&);
+  };
 /*
+ * - vec2, vec3, vec4, mat2, mat3, mat4
  * – zero, identify, addition, multiplication
  * – dot product, cross product
  * – transpose, inverse, trace, determinant
