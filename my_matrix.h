@@ -47,6 +47,7 @@
       vec operator-  (const vec& other);
       vec operator== (const vec& other);
       vec operator*  (const float& scalar);
+      void display();
   };
 /*
  * - vec2, vec3, vec4, mat2, mat3, mat4

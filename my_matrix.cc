@@ -163,3 +163,13 @@ vec<T> vec<T>::operator* (const float& scalar){
   }
   return new_vec;
 }
+
+template <typename T>
+void vec<T>::display(){
+  for (int i=0; i<this->height; i++){
+    for (int j=0; j<this->width; j++){
+      printf("%lf ", this->local->data[j*this->width + i]);
+    }
+    printf("\n");
+  }
+}
