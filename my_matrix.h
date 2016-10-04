@@ -31,15 +31,21 @@
     private:
       T* local;
       int width;
+      int height;
     public:
-      vec(int width, int height, float* dada);
+      vec();
+      vec(int width, int height);
+      vec(int width, int height, float* data);
+      ~vec();
+
       float determinant();
       T* transpose();
       T* inverse();
       float trace();
-      vec operator+ (const vec&);
-      vec operator- (const vec&);
-      vec operator= (const vec&);
+      vec operator+  (const vec& other);
+      vec operator-  (const vec& other);
+      vec operator== (const vec& other);
+      vec operator*  (const float& scalar);
   };
 /*
  * - vec2, vec3, vec4, mat2, mat3, mat4
