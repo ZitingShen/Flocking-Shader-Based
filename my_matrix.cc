@@ -19,6 +19,15 @@ vec<T>::vec(int width, int height, float* data){
 }
 
 template <typename T>
+vec<T>::vec(float a, float b, float c, float d){
+  this->width = 2;
+  this-> height =2;
+  this->local = malloc(sizeof(float) * width * height);
+  this->local[0] = a; this->local[1] = b;
+  this->local[2] = c; this->local[3] = d;
+}
+
+template <typename T>
 vec<T>::~vec(){
   free(this->local);
 }
@@ -26,7 +35,7 @@ vec<T>::~vec(){
 template <typename T>
 float vec<T>::determinant(){
   assert(this->width > 1);
-  float* m = local->data;
+  float* m = this->local->data;
   if (this->width == 2){
     return m[0]*m[3] - m[1]*m[2];
   }else
@@ -53,7 +62,7 @@ T* vec<T>::transpose(){
   T* new_mat = malloc(sizeof(this));
   for (int i=0; i<this->width; i++){
     for (int j=0; j<this->height; j++){
-      new_mat->data[j*this->height+i] = this->data[i*this->width+j];
+      new_mat->local->data[j*this->height+i] = this->local->data[i*this->width+j];
     }
   }
   return new_mat;
@@ -62,9 +71,42 @@ T* vec<T>::transpose(){
 template <typename T>
 T* vec<T>::inverse(){
   assert(this->width > 1);
+  if (this->determinant() == 0) return NULL;
   T* new_mat = malloc(sizeof(this));
+  float* m = new_mat->local->data;
+  float* n = this->local->data;
+  float coeff = 1;
   if (this->width == 2){
+    coeff = 1.0/(this->determinant());
+    m[0] = coeff * n[3];
+    m[1] = coeff * -n[1];
+    m[2] = coeff * -n[2];
+    m[3] = coeff * n[0];
+  }else
+  if (this->width == 3){
+    coeff = (1.0)/(this->determinant());
+    m[0] = coeff * vec(n[4],n[5],n[7],n[8]).determinant();
+    m[1] = coeff * vec(n[2],n[1],n[8],n[7]).determinant();
+    m[2] = coeff * vec(n[1],n[2],n[4],n[5]).determinant();
+    m[3] = coeff * vec(n[5],n[4],n[8],n[6]).determinant();
+    m[4] = coeff * vec(n[0],n[2],n[4],n[5]).determinant();
+    m[5] = coeff * vec(n[2],n[0],n[5],n[4]).determinant();
+    m[6] = coeff * vec(n[3],n[4],n[6],n[7]).determinant();
+    m[7] = coeff * vec(n[1],n[0],n[7],n[6]).determinant();
+    m[8] = coeff * vec(n[0],n[1],n[3],n[4]).determinant();
+  }else{
+    assert(this->width == 4);
   }
+}
+
+template <typename T>
+float vec<T>::trace(){
+  assert(this->width == this->height);
+  float result;
+  for (int i=0; i<this->width; i++){
+    result += this->local->data[i*width + i];
+  }
+  return result;
 }
 
 template <typename T>
@@ -75,7 +117,7 @@ vec<T> vec<T>::operator+ (const vec& other){
   for (int i=0; i<this->width;i++){
     for (int j=0; j<this->height; j++){
       index = i*this->width + j;
-      new_vec[index] = this->data[index] + other->data[index];
+      new_vec[index] = this->local->data[index] + other->local->data[index];
     }
   }
   return new_vec;
@@ -89,7 +131,7 @@ vec<T> vec<T>::operator- (const vec& other){
   for (int i=0; i<this->width;i++){
     for (int j=0; j<this->height; j++){
       index = i*this->width + j;
-      new_vec[index] = this->data[index] - other->data[index];
+      new_vec[index] = this->local->data[index] - other->local->data[index];
     }
   }
   return new_vec;
@@ -103,7 +145,7 @@ vec<T> vec<T>::operator== (const vec& other){
   for (int i=0; i<this->width;i++){
     for (int j=0; j<this->height; j++){
       index = i*this->width + j;
-      same = same && (this->data[index] == other->data[index]);
+      same = same && (this->local->data[index] == other->local->data[index]);
     }
   }
   return same;
@@ -116,7 +158,7 @@ vec<T> vec<T>::operator* (const float& scalar){
   for (int i=0; i<this->width;i++){
     for (int j=0; j<this->height; j++){
       index = i*this->width + j;
-      new_vec[index] = this->data[index] * scalar;
+      new_vec[index] = this->local->data[index] * scalar;
     }
   }
   return new_vec;

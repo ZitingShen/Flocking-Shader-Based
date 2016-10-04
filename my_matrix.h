@@ -36,6 +36,7 @@
       vec();
       vec(int width, int height);
       vec(int width, int height, float* data);
+      vec(float a, float b, float c, float d);
       ~vec();
 
       float determinant();
