@@ -4,6 +4,13 @@
 #include <assert.h>
 
 template <typename T>
+vec<T>::vec() {
+	this->local = NULL;
+	this->width = 0;
+	this->height = 0;
+}
+
+template <typename T>
 vec<T>::vec(int width, int height){
   this->local = malloc(sizeof(float) * width * height);
   this->width = width;
