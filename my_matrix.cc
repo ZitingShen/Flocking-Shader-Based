@@ -216,84 +216,84 @@ T* vec<T>::inverse(){
               n[8] * n[2] * n[5];
       coeff = 1.0/ (n[0] * m[0] + n[1] * m[4] + n[2] * m[8] + n[3] * m[12]);
       for (int i = 0; i < 16; i++)
-        m[i] = m[i] * coeff;
-  }
-  return new_mat;
+m[i] = m[i] * coeff;
+	}
+	return new_mat;
 }
 
 template <typename T>
-float vec<T>::trace(){
-  assert(this->width == this->height);
-  float result;
-  for (int i=0; i<this->width; i++){
-    result += this->local->data[i*width + i];
-  }
-  return result;
+float vec<T>::trace() {
+	assert(this->width == this->height);
+	float result;
+	for (int i = 0; i < this->width; i++) {
+		result += this->local->data[i*width + i];
+	}
+	return result;
 }
 
 template <typename T>
-vec<T> vec<T>::operator+ (const vec& other){
-  assert(this->width == other->width && this->height == other->height);
-  vec<T> new_vec = vec<T>(this->width, this->height);
-  int index = 0;
-  for (int i=0; i<this->width;i++){
-    for (int j=0; j<this->height; j++){
-      index = i*this->width + j;
-      new_vec[index] = this->local->data[index] + other->local->data[index];
-    }
-  }
-  return new_vec;
+vec<T> vec<T>::operator+ (const vec& other) {
+	assert(this->width == other->width && this->height == other->height);
+	vec<T> new_vec = vec<T>(this->width, this->height);
+	int index = 0;
+	for (int i = 0; i < this->width; i++) {
+		for (int j = 0; j < this->height; j++) {
+			index = i*this->width + j;
+			new_vec[index] = this->local->data[index] + other->local->data[index];
+		}
+	}
+	return new_vec;
 }
 
 template <typename T>
-vec<T> vec<T>::operator- (const vec& other){
-  assert(this->width == other->width && this->height == other->height);
-  vec<T> new_vec = vec<T>(this->width, this->height);
-  int index = 0;
-  for (int i=0; i<this->width;i++){
-    for (int j=0; j<this->height; j++){
-      index = i*this->width + j;
-      new_vec[index] = this->local->data[index] - other->local->data[index];
-    }
-  }
-  return new_vec;
+vec<T> vec<T>::operator- (const vec& other) {
+	assert(this->width == other->width && this->height == other->height);
+	vec<T> new_vec = vec<T>(this->width, this->height);
+	int index = 0;
+	for (int i = 0; i < this->width; i++) {
+		for (int j = 0; j < this->height; j++) {
+			index = i*this->width + j;
+			new_vec[index] = this->local->data[index] - other->local->data[index];
+		}
+	}
+	return new_vec;
 }
 
 template <typename T>
-vec<T> vec<T>::operator== (const vec& other){
-  if (!(this->width == other->width && this->height == other->height)) return false;
-  int index = 0;
-  bool same = true;
-  for (int i=0; i<this->width;i++){
-    for (int j=0; j<this->height; j++){
-      index = i*this->width + j;
-      same = same && (this->local->data[index] == other->local->data[index]);
-    }
-  }
-  return same;
+vec<T> vec<T>::operator== (const vec& other) {
+	if (!(this->width == other->width && this->height == other->height)) return false;
+	int index = 0;
+	bool same = true;
+	for (int i = 0; i < this->width; i++) {
+		for (int j = 0; j < this->height; j++) {
+			index = i*this->width + j;
+			same = same && (this->local->data[index] == other->local->data[index]);
+		}
+	}
+	return same;
 }
 
 template <typename T>
-vec<T> vec<T>::operator* (const float& scalar){
-  vec<T> new_vec = vec<T>(this->width, this->height);
-  int index = 0;
-  for (int i=0; i<this->width;i++){
-    for (int j=0; j<this->height; j++){
-      index = i*this->width + j;
-      new_vec[index] = this->local->data[index] * scalar;
-    }
-  }
-  return new_vec;
+vec<T> vec<T>::operator* (const float& scalar) {
+	vec<T> new_vec = vec<T>(this->width, this->height);
+	int index = 0;
+	for (int i = 0; i < this->width; i++) {
+		for (int j = 0; j < this->height; j++) {
+			index = i*this->width + j;
+			new_vec[index] = this->local->data[index] * scalar;
+		}
+	}
+	return new_vec;
 }
 
 template <typename T>
-void vec<T>::display(){
-  for (int i=0; i<this->height; i++){
-    for (int j=0; j<this->width; j++){
-      printf("%lf ", this->local->data[j*this->width + i]);
-    }
-    printf("\n");
-  }
+void vec<T>::display() {
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
+			printf("%lf ", this->local->data[j*this->width + i]);
+		}
+		printf("\n");
+	}
 }
 
 // dot and cross proudct
@@ -303,14 +303,26 @@ vec<T>* dot(vec<T>* vec_i, vec<T>* vec_ii) {
 	int sum = 0;
 	int dimension = vec_i->height;
 	vec<T>* new_vec = new vec<T>(vec_ii->width, vec_i->height);
-	for (int i = 0; i <dimension; i++) {
+	for (int i = 0; i < dimension; i++) {
 		for (int j = 0; j < dimension; j++) {
 			sum = 0;
 			for (int k = 0; k < dimension; k++) {
-				sum += vec_i[i*vec_i->width + j] * vec_ii[j*vec_ii->width + i];
+				sum += vec_i[i*vec_i->width + k] * vec_ii[k*vec_ii->width + j];
 			}
 			new_vec[i*dimension + j] = sum;
 		}
 	}
+	return new_vec;
+}
+
+template <typename T>
+vec<T>* cross(vec<T>* vec_i, vec<T>* vec_ii){
+	if (vec_i->width != 1 || vec_i->height != 3 || vec_ii->width != 1 || vec_ii->height != 3) return NULL;
+	float* a = vec_i->local->data;
+	float* b = vec_ii->local->data;
+	float* entries = new float[3](a[2]*b[3] - a[3]*b[2],
+														    a[3]*b[1] - a[1]*b[3],
+																a[1]*b[2] - a[2]*b[1]);
+	vec<T>* new_vec = new vec<T>(vec_ii->width, vec_i->height, entries);
 	return new_vec;
 }
