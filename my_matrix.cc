@@ -320,9 +320,10 @@ vec<T>* cross(vec<T>* vec_i, vec<T>* vec_ii){
 	if (vec_i->width != 1 || vec_i->height != 3 || vec_ii->width != 1 || vec_ii->height != 3) return NULL;
 	float* a = vec_i->local->data;
 	float* b = vec_ii->local->data;
-	float* entries = new float[3](a[2]*b[3] - a[3]*b[2],
-														    a[3]*b[1] - a[1]*b[3],
-																a[1]*b[2] - a[2]*b[1]);
+	float* entries = new float[3];
+  entries[0] = a[2]*b[3] - a[3]*b[2];
+  entries[1] = a[3]*b[1] - a[1]*b[3];
+	entries[2] = a[1]*b[2] - a[2]*b[1];
 	vec<T>* new_vec = new vec<T>(vec_ii->width, vec_i->height, entries);
 	return new_vec;
 }
