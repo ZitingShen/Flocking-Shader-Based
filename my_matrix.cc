@@ -298,7 +298,7 @@ void vec<T>::display() {
 
 // dot and cross proudct
 template <typename T>
-vec<T>* dot(vec<T>* vec_i, vec<T>* vec_ii) {
+vec<T>* dot(vec<T>* vec_i, vec<T>* vec_ii){
 	if (vec_i->height != vec_ii->width) return NULL;
 	int sum = 0;
 	int dimension = vec_i->height;
@@ -326,4 +326,27 @@ vec<T>* cross(vec<T>* vec_i, vec<T>* vec_ii){
 	entries[2] = a[1]*b[2] - a[2]*b[1];
 	vec<T>* new_vec = new vec<T>(vec_ii->width, vec_i->height, entries);
 	return new_vec;
+}
+
+//generate identity or zeor matrix with specified dimension
+template <typename T>
+vec<T>* zero(int dimension){
+  if (dimension<=0 || dimension>4) return NULL;
+	vec<T>* new_vec = new vec<T>(dimension, dimension);
+  for (int i=0; i< dimension*dimension; i++){
+    new_vec->local->data[i] = 0.0;
+  }
+  return new_vec;
+}
+
+template <typename T>
+vec<T>* identity(int dimension){
+  if (dimension<=0 || dimension>4) return NULL;
+  vec<T>* new_vec = new vec<T>(dimension, dimension);
+  for (int i=0; i<dimension; i++){
+    for (int j=0; j<dimension; j++){
+      new_vec->local->data[i] = i==j?1.0:0.0;
+    }
+  }
+  return new_vec;
 }
