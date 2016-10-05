@@ -295,3 +295,22 @@ void vec<T>::display(){
     printf("\n");
   }
 }
+
+// dot and cross proudct
+template <typename T>
+vec<T>* dot(vec<T>* vec_i, vec<T>* vec_ii) {
+	if (vec_i->height != vec_ii->width) return NULL;
+	int sum = 0;
+	int dimension = vec_i->height;
+	vec<T>* new_vec = new vec<T>(vec_ii->width, vec_i->height);
+	for (int i = 0; i <dimension; i++) {
+		for (int j = 0; j < dimension; j++) {
+			sum = 0;
+			for (int k = 0; k < dimension; k++) {
+				sum += vec_i[i*vec_i->width + j] * vec_ii[j*vec_ii->width + i];
+			}
+			new_vec[i*dimension + j] = sum;
+		}
+	}
+	return new_vec;
+}
