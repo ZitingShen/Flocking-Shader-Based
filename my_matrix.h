@@ -16,38 +16,32 @@
  */
 
 typedef struct _vec2{
-  float data[2];
+  float data[VEC2];
 } vec2;
 
 typedef struct _vec3{
-  float data[3];
+  float data[VEC3];
 } vec3;
 
 typedef struct _vec4{
-  float data[4];
+  float data[VEC4];
 } vec4;
 
 typedef struct _mat2{
-  float data[4];
+  float data[MAT2];
 } mat2;
 
 typedef struct _mat3{
-  float data[9];
+  float data[MAT3];
 } mat3;
 
 typedef struct _mat4{
-  float data[16];
+  float data[MAT4];
 } mat4;
 
 template <typename T>
 class vec{
   private:
-    //void ValidateType(vec2 &v2) const {}
-    //void ValidateType(vec3 &v3) const {}
-    //void ValidateType(vec4 &v4) const {}
-    //void ValidateType(mat2 &m2) const {}
-    //void ValidateType(mat3 &m3) const {}
-    //void ValidateType(mat4 &m4) const {}
     T* local;
     int width;
     int height;
@@ -91,5 +85,11 @@ vec<T>* zero(int dimension);
 
 template <typename T>
 vec<T>* identity(int dimension);
+
+template <typename T>
+vec<T>* promote(vec<T>* original, bool append_one);
+
+template <typename T>
+vec<T>* reduce(vec<T>* original);
 
 #endif

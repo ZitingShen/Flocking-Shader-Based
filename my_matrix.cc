@@ -474,3 +474,38 @@ vec<T>* identity(int dimension){
   }
   return new_vec;
 }
+
+template <typename T>
+vec<T>* promote(vec<T>* original, bool append_one){
+  if (original->width != 3) return NULL;
+  vec<T>* promoted = NULL;
+  float* m = original->local->data;
+  if (original->height == 3){
+    promoted = vec<T>(m[0], m[1], m[2], 0,
+                      m[3], m[4], m[5], 0,
+                      m[6], m[7], m[8], 0,
+                      0,0,0, append_one?1:0);
+    return promoted;
+  }else{
+    assert(original->height == 1);
+    promoted = vec<T>(m[0], m[1], m[2], append_one?1:0);
+    return promoted;
+  }
+}
+
+template <typename T>
+vec<T>* reduce(vec<T>* original){
+  if (original->width != 4) return NULL;
+  vec<T>* reduced = NULL;
+  float* m = original->local->data;
+  if (original->height == 4){
+    reduced = vec<T>(m[0], m[1], m[2],
+                     m[4], m[5], m[6],
+                     m[8], m[9], m[10]);
+    return reduced;
+  }else{
+    assert(original->height == 1);
+    reduced = vec<T>(m[0], m[1], m[2]);
+    return reduced;
+  }
+}
