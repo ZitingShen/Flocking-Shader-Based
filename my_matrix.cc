@@ -12,31 +12,127 @@ vec<T>::vec() {
 
 template <typename T>
 vec<T>::vec(int width, int height){
-  this->local = malloc(sizeof(float) * width * height);
+  switch(width*height){
+    case VEC2:
+      this->local = new vec2;
+      break;
+    case VEC3:
+      this->local = new vec3;
+      break;
+    case VEC4: // MAT2 is the duplicate of VEC4
+      if (height != 2) {this->local = new vec4;}
+      else{this->local = new mat2;}
+      break;
+    case MAT3:
+      this->local = new mat3;
+      break;
+    case MAT4:
+      this->local = new mat4;
+      break;
+    default:
+      this->local = NULL; // should not happen
+      break;
+  }
   this->width = width;
   this->height = height;
 }
 
 template <typename T>
 vec<T>::vec(int width, int height, float* data){
-  this->local = malloc(sizeof(float) * width * height);
+  switch(width*height){
+    case VEC2:
+      this->local = new vec2;
+      break;
+    case VEC3:
+      this->local = new vec3;
+      break;
+    case VEC4: // MAT2 is the duplicate of VEC4
+      if (height != 2) {this->local = new vec4;}
+      else{this->local = new mat2;}
+      break;
+    case MAT3:
+      this->local = new mat3;
+      break;
+    case MAT4:
+      this->local = new mat4;
+      break;
+    default:
+      this->local = NULL; // should not happen
+      break;
+  }
   this->width = width;
   this->height = height;
-  memcpy(local, data, sizeof(float));
+  memcpy(local->data, data, sizeof(float));
 }
 
 template <typename T>
-vec<T>::vec(float a, float b, float c, float d){
+vec<T>::vec(float a, float b){
+  this->local = new vec2;
+  float* m = this->local->data;
+  m[0] = a; m[1] = b;
   this->width = 2;
-  this-> height =2;
-  this->local = malloc(sizeof(float) * width * height);
-  this->local[0] = a; this->local[1] = b;
-  this->local[2] = c; this->local[3] = d;
+  this->height = 1;
+}
+
+template <typename T>
+vec<T>::vec(float a, float b, float c){
+  this->local = new vec3;
+  float* m = this->local->data;
+  m[0] = a; m[1] = b; m[2] = c;
+  this->width = 3;
+  this->height = 1;
+}
+
+template <typename T>
+vec<T>::vec(float a, float b, float c, float d, bool matrix){
+  if (matrix){
+    this->local = new mat2;
+    float* m = this->local->data;
+    m[0] = a; m[1] = b;
+    m[2] = c; m[3] = d;
+    this->width = 2;
+    this-> height =2;
+  }else{
+  this->local = new vec4;
+    float* m = this->local->data;
+    m[0] = a; m[1] = c;
+    m[2] = b; m[3] = d;
+    this->width = 4;
+    this-> height =1;
+  }
+}
+
+template <typename T>
+vec<T>::vec(float a1, float a2, float a3,
+        float b1, float b2, float b3,
+        float c1, float c2, float c3){
+  this->local = new mat3;
+  float* m = this->local->data;
+  m[0] = a1; m[1] = b1; m[2] = c1;
+  m[3] = a2; m[4] = b2; m[5] = c2;
+  m[6] = a3; m[7] = b3; m[8] = c3;
+  this->width = 3;
+  this->height = 3;
+}
+
+template <typename T>
+vec<T>::vec(float a1, float a2, float a3, float a4,
+        float b1, float b2, float b3, float b4,
+        float c1, float c2, float c3, float c4,
+        float d1, float d2, float d3, float d4){
+  this->local = new mat4;
+  float* m = this->local->data;
+  m[0] = a1; m[1] = b1; m[2] = c1, m[3] = d1;
+  m[4] = a2; m[5] = b2; m[6] = c2, m[7] = d2;
+  m[8] = a3; m[9] = b3; m[10] = c3, m[11] = d3;
+  m[12] = a4; m[13] = b4; m[14] = c4; m[15] = d4;
+  this->width = 4;
+  this->height = 4;
 }
 
 template <typename T>
 vec<T>::~vec(){
-  free(this->local);
+  delete this->local;
 }
 
 template <typename T>
@@ -66,10 +162,25 @@ float vec<T>::determinant(){
 template <typename T>
 T* vec<T>::transpose(){
   if (this->width == 1) return this->local;
-  T* new_mat = malloc(sizeof(this));
+  T* new_mat = NULL;
+  switch (this->width*this->height){
+    case MAT2:
+      new_mat = new mat2;
+      break;
+    case MAT3:
+      new_mat = new mat3;
+      break;
+    case MAT4:
+      new_mat = new mat4;
+      break;
+    default: // should not happen
+      break;
+  }
+  float* m = this->local->data;
+  float* n = new_mat->local->data;
   for (int i=0; i<this->width; i++){
     for (int j=0; j<this->height; j++){
-      new_mat->local->data[j*this->height+i] = this->local->data[i*this->width+j];
+      n[j*this->height+i] = m[i*this->width+j];
     }
   }
   return new_mat;
@@ -79,7 +190,20 @@ template <typename T>
 T* vec<T>::inverse(){
   assert(this->width > 1);
   if (this->determinant() == 0) return NULL;
-  T* new_mat = malloc(sizeof(this));
+  T* new_mat = NULL;
+  switch (this->width*this->height){
+    case MAT2:
+      new_mat = new mat2;
+      break;
+    case MAT3:
+      new_mat = new mat3;
+      break;
+    case MAT4:
+      new_mat = new mat4;
+      break;
+    default: // should not happen
+      break;
+  }
   float* m = new_mat->local->data;
   float* n = this->local->data;
   float coeff = 1;
