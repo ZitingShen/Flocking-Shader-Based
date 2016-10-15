@@ -15,81 +15,89 @@
  * – transpose, inverse, trace, determinant
  */
 
-typedef struct _vec2{
-  float data[VEC2];
-} vec2;
-
-typedef struct _vec3{
-  float data[VEC3];
-} vec3;
-
-typedef struct _vec4{
-  float data[VEC4];
-} vec4;
-
-typedef struct _mat2{
-  float data[MAT2];
-} mat2;
-
-typedef struct _mat3{
-  float data[MAT3];
-} mat3;
-
-typedef struct _mat4{
-  float data[MAT4];
-} mat4;
-
-template <typename T>
 class vec{
-  private:
-    T* local;
+  friend vec dot(vec* vec_i, vec* vec_ii);
+  friend vec cross(vec* vec_i, vec* vec_ii);
+  friend vec zero(int dimension);
+  friend vec identity(int dimension);
+  friend vec promote(vec* original, bool append_one);
+  friend vec reduce(vec* original);
+
+  protected:
+    float* data;
     int width;
     int height;
   public:
-    vec();
     /* put immediates in COLUMN-MAJOR order */
     /* using new/delete for memory allocation */
-    vec(float a, float b);
-    vec(float a, float b, float c);
-    vec(float a, float b, float c, float d, bool matrix);
-    vec(float a1, float a2, float a3,
-        float b1, float b2, float b3,
-        float c1, float c2, float c3);
-    vec(float a1, float a2, float a3, float a4,
-        float b1, float b2, float b3, float b4,
-        float c1, float c2, float c3, float c4,
-        float d1, float d2, float d3, float d4);
-    vec(int width, int height);
+    vec();
+    vec(int width, int height); // returns a all-zero vec/mat
     vec(int width, int height, float* data);
     ~vec();
 
     float determinant();
-    T* transpose();
-    T* inverse();
+    vec* transpose();
+    vec* inverse();
     float trace();
     vec operator+  (const vec& other);
     vec operator-  (const vec& other);
-    vec operator== (const vec& other);
+    bool operator== (const vec& other);
     vec operator*  (const float& scalar);
+    float& operator[] (const int index); // for assigning
+    const float& operator[] (const int index) const; // for accessing
     void display();
 };
 
-template <typename T>
-vec<T>* dot(vec<T>* vec_i, vec<T>* vec_ii);
+class vec2:
+public vec{
+  public:
+  using vec::vec;
+  vec2(float a, float b);
+  ~vec2();
+};
 
-template <typename T>
-vec<T>* cross(vec<T>* vec_i, vec<T>* vec_ii);
+class vec3:
+public vec{
+  public:
+  using vec::vec;
+  vec3(float a, float b, float c);
+  ~vec3();
+};
 
-template <typename T>
-vec<T>* zero(int dimension);
+class vec4:
+public vec{
+  public:
+  using vec::vec;
+  vec4(float a, float b, float c, float d);
+  ~vec4();
+};
 
-template <typename T>
-vec<T>* identity(int dimension);
+class mat2:
+public vec{
+  public:
+  using vec::vec;
+  mat2(float a, float b, float c, float d);
+  ~mat2();
+};
 
-template <typename T>
-vec<T>* promote(vec<T>* original, bool append_one);
+class mat3:
+public vec{
+  public:
+  using vec::vec;
+  mat3(float a1, float a2, float a3,
+       float b1, float b2, float b3,
+       float c1, float c2, float c3);
+  ~mat3();
+};
 
-template <typename T>
-vec<T>* reduce(vec<T>* original);
-
+class mat4:
+public vec{
+  public:
+  using vec::vec;
+  mat4(float a1, float a2, float a3, float a4,
+       float b1, float b2, float b3, float b4,
+       float c1, float c2, float c3, float c4,
+       float d1, float d2, float d3, float d4);
+  ~mat4();
+};
 #endif
