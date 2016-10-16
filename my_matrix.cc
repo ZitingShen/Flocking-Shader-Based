@@ -429,6 +429,54 @@ void vec::operator= (const vec& other){
   }
 }
 
+void vec::operator+= (const vec& other){
+  int index = 0;
+  if (!(this->width == other.width && this->height == other.height)){
+    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+    for (int i=0; i<this->height; i++){
+      for (int j=0; j<this->width; j++){
+        index = i*this->width + j;
+        this->data[index] = 0;
+      }
+    }
+   }
+  for (int i=0; i<this->height; i++){
+    for (int j=0; j<this->width; j++){
+      index = i*this->width + j;
+      this->data[index] = this->data[index] + other.data[index];
+    }
+  }
+}
+
+void vec::operator-= (const vec& other){
+  int index = 0;
+  if (!(this->width == other.width && this->height == other.height)){
+    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+    for (int i=0; i<this->height; i++){
+      for (int j=0; j<this->width; j++){
+        index = i*this->width + j;
+        this->data[index] = 0;
+      }
+    }
+   }
+  for (int i=0; i<this->height; i++){
+    for (int j=0; j<this->width; j++){
+      index = i*this->width + j;
+      this->data[index] = this->data[index] - other.data[index];
+    }
+  }
+}
+
+void vec::operator++ (){
+  int index = 0;
+  for (int i=0; i<this->height; i++){
+    for (int j=0; j<this->width; j++){
+      index = i*this->width + j;
+      this->data[index] = this->data[index] * 2;
+    }
+  }
+}
+
 vec* vec::operator* (const float& scalar) {
 	vec* new_vec = new vec(this->width, this->height);
 	int index = 0;

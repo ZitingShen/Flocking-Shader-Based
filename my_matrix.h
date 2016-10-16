@@ -17,8 +17,6 @@
  */
 
 class vec{
-
-
   protected:
     int width;
     int height;
@@ -40,6 +38,9 @@ class vec{
     vec* operator-  (const vec& other);
     bool operator== (const vec& other);
     void operator= (const vec& other);
+    void operator+= (const vec& other);
+    void operator-= (const vec& other);
+    void operator++ (); // for doubling all values
     vec* operator*  (const float& scalar);
     float& operator[] (const int index); // for assigning
     const float& operator[] (const int index) const; // for accessing
