@@ -11,71 +11,23 @@ vec::vec(){
 	this->height = 0;
 }
 
-vec::vec(int width, int height, float* data){
-  switch(height){
-    case 1:
-      switch(width){
-        case 2:
-          vec2::vec2(data[0], data[1]);
-          break;
-        case 3:
-          vec3::vec3(data[0], data[1]);
-          break;
-        case 4:
-          vec4::vec4(data[0], data[1], data[2], data[3]);
-          break;
-        default: // should not happen
-          std::cerr << "VEC CONSTRUCTOR: BAD WIDTH\n";
-          break;
-        break;
-      }
-    case 2:
-      mat2::mat2(data[0], data[1], data[2], data[3]);
-      break;
-    case 3:
-      mat3::mat3(data[0], data[1], data[2], data[3],
-                 data[4], data[5], data[6], data[7], data[8]);
-      break;
-    case 4:
-      mat4::mat4(data[0], data[1], data[2], data[3],
-                 data[4], data[5], data[6], data[7],
-                 data[8], data[9], data[10], data[11],
-                 data[12], data[13], data[14], data[15]);
-      break;
-    default: // should not happen
-      std::cerr << "VEC CONSTRUCTOR: BAD HEIGHT\n";
-      break;
-  }
+vec::vec(int width, int height){
+  this->data = new float[width*height];
+  this->width = width;
+  this->height = height;
 }
 
-vec::vec(int width, int height){
-  switch(width*height){
-    case VEC2:
-      vec2::vec2(0, 0);
-      break;
-    case VEC3:
-      vec3::vec3(0, 0, 0);
-      break;
-    case VEC4: // MAT2 is the duplicate of VEC4
-      if (height != 2) {vec4::vec4(0, 0, 0, 0);}
-      else{mat2::mat2(0, 0,
-                      0, 0);}
-      break;
-    case MAT3:
-      mat3::mat3(0, 0, 0,
-                 0, 0, 0,
-                 0, 0, 0);
-      break;
-    case MAT4:
-      mat4::mat4(0, 0, 0, 0,
-                 0, 0, 0, 0,
-                 0, 0, 0, 0,
-                 0, 0, 0, 0);
-      break;
-    default:
-      std::cerr << "VEC CONSTRUCTOR: BAD MATRIX\n";
-      break;
-  }
+vec2::vec2(){
+  this->data = new float[2];
+  this->width = 2;
+  this->height = 1;
+}
+
+vec2::vec2(float* data){
+  this->data = new float[2];
+  this->width = 2;
+  this->height = 1;
+  memcpy(this->data, data, sizeof(float) * 2);
 }
 
 vec2::vec2(float a, float b){
@@ -86,6 +38,19 @@ vec2::vec2(float a, float b){
   this->height = 1;
 }
 
+vec3::vec3(){
+  this->data = new float[3];
+  this->width = 3;
+  this->height = 1;
+}
+
+vec3::vec3(float* data){
+  this->data = new float[3];
+  this->width = 3;
+  this->height = 1;
+  memcpy(this->data, data, sizeof(float) * 3);
+}
+
 vec3::vec3(float a, float b, float c){
   this->data = new float[3];
   float* m = this->data;
@@ -94,13 +59,40 @@ vec3::vec3(float a, float b, float c){
   this->height = 1;
 }
 
+vec4::vec4(){
+  this->data = new float[4];
+  this->width = 4;
+  this->height = 1;
+}
+
+vec4::vec4(float* data){
+  this->data = new float[4];
+  this->width = 4;
+  this->height = 1;
+  memcpy(this->data, data, sizeof(float) * 4);
+}
+
 vec4::vec4(float a, float b, float c, float d){
   this->data = new float[4];
   float* m = this->data;
-  m[0] = a; m[1] = c;
-  m[2] = b; m[3] = d;
+  m[0] = a; m[1] = b; m[2] = c; m[3] = d;
   this->width = 4;
-  this-> height =1;
+  this-> height = 1;
+}
+
+mat2::mat2(){
+  this->data = new float[4];
+  this->width = 2;
+  this->height = 2;
+}
+
+mat2::mat2(float* data){
+  this->data = new float[4];
+  this->width = 2;
+  this->height = 2;
+  float* m = this->data;
+  m[0] = data[0]; m[1] = data[2];
+  m[2] = data[1]; m[3] = data[3];
 }
 
 mat2::mat2(float a, float b, float c, float d){
@@ -110,6 +102,22 @@ mat2::mat2(float a, float b, float c, float d){
   m[2] = c; m[3] = d;
   this->width = 2;
   this-> height =2;
+}
+
+mat3::mat3(){
+  this->data = new float[9];
+  this->width = 3;
+  this->height = 3;
+}
+
+mat3::mat3(float* data){
+  this->data = new float[9];
+  this->width = 3;
+  this->height = 3;
+  float* m = this->data;
+  m[0] = data[0]; m[1] = data[3]; m[2] = data[6];
+  m[3] = data[1]; m[4] = data[4]; m[5] = data[7];
+  m[6] = data[2]; m[7] = data[5]; m[8] = data[8];
 }
 
 mat3::mat3(float a1, float a2, float a3,
@@ -122,6 +130,23 @@ mat3::mat3(float a1, float a2, float a3,
   m[6] = a3; m[7] = b3; m[8] = c3;
   this->width = 3;
   this->height = 3;
+}
+
+mat4::mat4(){
+  this->data = new float[16];
+  this->width = 4;
+  this->height = 4;
+}
+
+mat4::mat4(float* data){
+  this->data = new float[16];
+  this->width = 4;
+  this->height = 4;
+  float* m = this->data;
+  m[0] = data[0]; m[1] = data[4]; m[2] = data[8], m[3] = data[12];
+  m[4] = data[1]; m[5] = data[5]; m[6] = data[9], m[7] = data[13];
+  m[8] = data[2]; m[9] = data[6]; m[10] = data[10], m[11] = data[14];
+  m[12] = data[3]; m[13] = data[7]; m[14] = data[11]; m[15] = data[15];
 }
 
 mat4::mat4(float a1, float a2, float a3, float a4,
@@ -140,6 +165,14 @@ mat4::mat4(float a1, float a2, float a3, float a4,
 
 vec::~vec(){
   delete [] data;
+}
+
+int vec::get_height(){
+  return this->height;
+}
+
+int vec::get_width(){
+  return this->width;
 }
 
 float vec::determinant(){
@@ -165,7 +198,10 @@ float vec::determinant(){
 }
 
 vec* vec::transpose(){
-  if (this->width <= 1) return this;
+  if (this->width <= 1){
+    std::cerr << "TRANSPOSE: BAD DIMENSION\n";
+    return NULL;
+  }
   vec* new_mat = new vec(this->width, this->height);
   float* m = this->data;
   float* n = new_mat->data;
@@ -179,7 +215,10 @@ vec* vec::transpose(){
 
 vec* vec::inverse(){
   assert(this->width > 1);
-  if (this->determinant() == 0) return NULL;
+  if (this->determinant() == 0){
+    std::cerr << "INVERSE: BAD MATRIX\n";
+    return NULL;
+  }
   vec* new_mat = new vec(this->width, this->height);
   float* m = new_mat->data;
   float* n = this->data;
@@ -316,9 +355,10 @@ vec* vec::inverse(){
               n[8] * n[1] * n[6] -
               n[8] * n[2] * n[5];
       coeff = 1.0/ (n[0] * m[0] + n[1] * m[4] + n[2] * m[8] + n[3] * m[12]);
-      for (int i = 0; i < 16; i++)
-m[i] = m[i] * coeff;
-	}
+      for (int i = 0; i < 16; i++){
+        m[i] = m[i] * coeff;
+	    }
+  }
 	return new_mat;
 }
 
@@ -331,27 +371,27 @@ float vec::trace() {
 	return result;
 }
 
-vec vec::operator+ (const vec& other) {
-	assert(this->width == other->width && this->height == other->height);
-	vec new_vec = vec(this->width, this->height);
+vec* vec::operator+ (const vec& other) {
+	assert(this->width == other.width && this->height == other.height);
+	vec* new_vec = new vec(this->width, this->height);
 	int index = 0;
-	for (int i = 0; i < this->width; i++) {
-		for (int j = 0; j < this->height; j++) {
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec.data[index] = this->data[index] + other.data[index];
+			new_vec->data[index] = this->data[index] + other.data[index];
 		}
 	}
 	return new_vec;
 }
 
-vec vec::operator- (const vec& other) {
-	assert(this->width == other->width && this->height == other->height);
-	vec new_vec = vec(this->width, this->height);
+vec* vec::operator- (const vec& other) {
+	assert(this->width == other.width && this->height == other.height);
+	vec* new_vec = new vec(this->width, this->height);
 	int index = 0;
-	for (int i = 0; i < this->width; i++) {
-		for (int j = 0; j < this->height; j++) {
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec.data[index] = this->data[index] - other.data[index];
+			new_vec->data[index] = this->data[index] - other.data[index];
 		}
 	}
 	return new_vec;
@@ -361,8 +401,8 @@ bool vec::operator== (const vec& other) {
 	if (!(this->width == other.width && this->height == other.height)) return false;
 	int index = 0;
 	bool same = true;
-	for (int i = 0; i < this->width; i++) {
-		for (int j = 0; j < this->height; j++) {
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
 			same = same && (this->data[index] == other.data[index]);
 		}
@@ -370,13 +410,32 @@ bool vec::operator== (const vec& other) {
 	return same;
 }
 
-vec vec::operator* (const float& scalar) {
-	vec new_vec = vec(this->width, this->height);
+void vec::operator= (const vec& other){
+  int index = 0;
+  if (!(this->width == other.width && this->height == other.height)){
+    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+    for (int i=0; i<this->height; i++){
+      for (int j=0; j<this->width; j++){
+        index = i*this->width + j;
+        this->data[index] = 0;
+      }
+    }
+   }
+  for (int i=0; i<this->height; i++){
+    for (int j=0; j<this->width; j++){
+      index = i*this->width + j;
+      this->data[index] = other.data[index];
+    }
+  }
+}
+
+vec* vec::operator* (const float& scalar) {
+	vec* new_vec = new vec(this->width, this->height);
 	int index = 0;
-	for (int i = 0; i < this->width; i++) {
-		for (int j = 0; j < this->height; j++) {
+	for (int i = 0; i < this->height; i++) {
+		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec[index] = this->data[index] * scalar;
+			new_vec->data[index] = this->data[index] * scalar;
 		}
 	}
 	return new_vec;
@@ -392,40 +451,41 @@ const float& vec::operator[] (const int index) const{
   return this->data[index];
 }
 
-void vec::display() {
-	for (int i = 0; i < this->height; i++) {
-		for (int j = 0; j < this->width; j++) {
-			printf("%lf ", this->data[j*this->width + i]);
+void vec::display(){
+	for (int i=0; i<this->height; i++){
+		for (int j=0; j<this->width; j++){
+			printf("%lf ", this->data[i*this->width + j]);
 		}
 		printf("\n");
 	}
 }
 
 // dot and cross proudct
-vec dot(vec* vec_i, vec* vec_ii){
-	if (vec_i->height != vec_ii->width){
+vec* dot(vec* vec_i, vec* vec_ii){
+	if (vec_i->get_height() != vec_ii->get_width()){
     std::cerr << "DOT: BAD MATRIX\n";
-    return vec(vec_i->width, vec_i->height);
+    NULL;
   }
   int sum = 0;
-	int dimension = vec_i->height;
-	vec new_vec = vec(vec_ii->width, vec_i->height);
-	for (int i = 0; i < dimension; i++) {
-		for (int j = 0; j < dimension; j++) {
+	int dimension = vec_i->get_height();
+	vec* new_vec = new vec(vec_ii->get_width(), vec_i->get_height());
+	for (int i = 0; i<dimension; i++){
+		for (int j = 0; j<dimension; j++){
 			sum = 0;
-			for (int k = 0; k < dimension; k++) {
-				sum += vec_i->data[i*vec_i->width + k] * vec_ii->data[k*vec_ii->width + j];
+			for (int k = 0; k < dimension; k++){
+				sum += vec_i->data[i*vec_i->get_width() + k] * vec_ii->data[k*vec_ii->get_width() + j];
 			}
-			new_vec[i*dimension + j] = sum;
+			(*new_vec)[i*dimension + j] = sum;
 		}
 	}
 	return new_vec;
 }
 
-vec cross(vec* vec_i, vec* vec_ii){
-	if (vec_i->width != 1 || vec_i->height != 3 || vec_ii->width != 1 || vec_ii->height != 3){
+vec* cross(vec* vec_i, vec* vec_ii){
+	if (vec_i->get_width() != 1 || vec_i->get_height() != 3 
+    || vec_ii->get_width() != 1 || vec_ii->get_height() != 3){
     std::cerr << "CROSS: BAD MATRIX\n";
-    return vec(vec_i->width, vec_i->height);
+    NULL;
   }
 	float* a = vec_i->data;
 	float* b = vec_ii->data;
@@ -433,70 +493,113 @@ vec cross(vec* vec_i, vec* vec_ii){
   entries[0] = a[2]*b[3] - a[3]*b[2];
   entries[1] = a[3]*b[1] - a[1]*b[3];
 	entries[2] = a[1]*b[2] - a[2]*b[1];
-	vec new_vec = vec(vec_ii->width, vec_i->height, entries);
+	vec* new_vec = get_vec(vec_ii->get_width(), vec_i->get_height(), entries);
 	return new_vec;
 }
 
 //generate identity or zeor matrix with specified dimension
-vec zero(int dimension){
+vec* all_zero(int dimension){
   if (dimension<=0 || dimension>4){
     std::cerr << "ZERO: BAD DIMENSION\n";
-    return vec(4, 4);
+    return NULL;
   }
-	vec new_vec =  vec(dimension, dimension);
-  for (int i=0; i< dimension*dimension; i++){
-    new_vec.data[i] = 0.0;
+	switch(dimension){
+    case 2:
+      return new mat2::mat2(0,0,0,0);
+      break;
+    case 3:
+      return new mat3::mat3(0,0,0,
+                            0,0,0,
+                            0,0,0);
+      break;
+    case 4:
+      return new mat4::mat4(0,0,0,0,
+                            0,0,0,0,
+                            0,0,0,0,
+                            0,0,0,0);
+      break;
+    default:
+      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
+      return NULL;
+      break;
   }
-  return new_vec;
 }
 
-vec identity(int dimension){
+vec* identity(int dimension){
   if (dimension<=0 || dimension>4){
     std::cerr << "IDENTITY: BAD DIMENSION\n";
-    return vec(4, 4);
+    NULL;
   }
-  vec new_vec =  vec(dimension, dimension);
+  int index = 0;
+  vec* new_vec = new vec(dimension, dimension);
   for (int i=0; i<dimension; i++){
     for (int j=0; j<dimension; j++){
-      new_vec.data[i] = i==j?1.0:0.0;
+      index = i*dimension + j;
+      new_vec->data[index] = (index%(dimension+1) == 0)?1.0:0.0;
     }
   }
   return new_vec;
 }
 
-vec promote(vec* original, bool append_one){
-  if (original->width != 3){
-    std::cerr << "PROMOTE: BAD DIMENSION\n";
-    return vec(4, 4);
-  }
-  float* m = original->data;
-  if (original->height == 3){
-   vec promoted = mat4(m[0], m[1], m[2], 0,
-                       m[3], m[4], m[5], 0,
-                       m[6], m[7], m[8], 0,
-                       0,0,0, append_one?1:0);
-    return promoted;
+vec* vec::promote(bool append_one){
+  assert(this->width == 3 && (this->height == 3 || this->height == 1));
+  float* m = this->data;
+  if (this->height == 1){
+    return new vec4(m[0], m[1], m[2], append_one?1:0);
   }else{
-    assert(original->height == 1);
-    vec promoted = vec4(m[0], m[1], m[2], append_one?1:0);
-    return promoted;
+  return new mat4(m[0], m[3], m[6], 0,
+                  m[1], m[4], m[7], 0,
+                  m[2], m[5], m[8], 0,
+                  0,0,0, append_one?1:0);
   }
 }
 
-vec reduce(vec* original){
-  if (original->width != 4){
-    std::cerr << "REDUCE: BAD DIMENSION\n";
-    return vec(3, 3);
-  }
-  float* m = original->data;
-  if (original->height == 4){
-    vec reduced = mat3(m[0], m[1], m[2],
-                       m[4], m[5], m[6],
-                       m[8], m[9], m[10]);
-    return reduced;
+vec* vec::reduce(){
+  assert(this->width == 4 && (this->height == 4 || this->height == 1));
+  float* m = this->data;
+  if (this->height == 1){
+    return new vec3(m[0], m[1], m[2]);
   }else{
-    assert(original->height == 1);
-    vec reduced = vec3(m[0], m[1], m[2]);
-    return reduced;
+    return new mat3(m[0], m[4], m[8],
+                    m[1], m[5], m[9],
+                    m[2], m[6], m[10]);
+  }
+}
+
+
+
+
+vec* get_vec(int width, int height, float* data){
+  switch(height){
+    case 1:
+      switch(width){
+        case 2:
+          return new vec2::vec2(data);
+          break;
+        case 3:
+          return new vec3::vec3(data);
+          break;
+        case 4:
+          return new vec4::vec4(data);
+          break;
+        default: // should not happen
+          std::cerr << "VEC CONSTRUCTOR: BAD WIDTH\n";
+          return NULL;
+          break;
+        break;
+      }
+    case 2:
+      return new mat2::mat2(data);
+      break;
+    case 3:
+      return new mat3::mat3(data);
+      break;
+    case 4:
+      return new mat4::mat4(data);
+      break;
+    default: // should not happen
+      std::cerr << "VEC CONSTRUCTOR: BAD HEIGHT\n";
+      return NULL;
+      break;
   }
 }
