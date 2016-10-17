@@ -6,9 +6,8 @@
 #include "boid.h"
 #include "flocking.h"
 #include "gl_replacement.h"
-#include "my_matrix.h"
-#include "common.h"
 //#include "obstacle.h"
+#include "common.h"
 
 void init();
 void reshape(GLFWwindow* window, int w, int h);

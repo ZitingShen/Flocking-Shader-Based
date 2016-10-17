@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <math.h>
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
@@ -13,6 +14,7 @@
 #include "my_matrix.h"
 
 #define RADIAN_TO_DEGREE          57.29578 // 180 over pi
+#define	DEGREE_TO_RADIAN		  0.00873
 
 #define PARTNER_RADIUS            100
 #define DEFAULT_FLOCK_SIZE        20

@@ -10,8 +10,7 @@
 #endif
 
 #include <glm/glm.hpp>
-
-#define	DEGREE_TO_RADIAN				0.00873
+#include "common.h"
 
 void myLookAt(GLfloat eye[3], GLfloat center[3], GLfloat up[3]);
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar);

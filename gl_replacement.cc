@@ -1,14 +1,13 @@
 #include "gl_replacement.h"
 
+//TODO: replace glMultMatrix and glTranslate
 void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
-  glm::vec3 forward_normal =
-     glm::normalize(glm::vec3(centre[0] - eye[0],
-                              centre[1] - eye[1],
-                              centre[2] - eye[2]));
-  glm::vec3 side_normal =
-    glm::normalize(glm::cross(forward_normal, glm::vec3(up[0],up[1],up[2])));
+  vec3 forward_normal = normalize(vec3(centre[0] - eye[0],
+                                       centre[1] - eye[1],
+                                       centre[2] - eye[2]));
+  vec3 side_normal = normalize(cross(forward_normal, vec3(up[0],up[1],up[2])));
 
-  glm::vec3 up_normal = glm::cross(side_normal, forward_normal);
+  vec3 up_normal = cross(side_normal, forward_normal);
 
   GLfloat trans_matrix[16] = //putting in column-major order
              {side_normal[0], up_normal[0], -forward_normal[0], 0,
