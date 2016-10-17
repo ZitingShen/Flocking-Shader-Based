@@ -60,12 +60,12 @@ void update_velocity(List* a_flock){
       if (is_partner(source, target)){
         if (target->flock_index == source->flock_index) {
           num_of_partners++;
-          s_modifier = s_modifier + source->pos - target->pos;
-          a_modifier = a_modifier + target->velocity;
-          c_modifier = c_modifier + target->pos;
+          s_modifier += source->pos - target->pos;
+          a_modifier += target->velocity;
+          c_modifier += target->pos;
         } else {
           num_of_boids_other_flocks++;
-          f_modifier = f_modifier + source->pos - target->pos;
+          f_modifier += source->pos - target->pos;
         }
       }
       potential_partner = potential_partner->next;
@@ -78,7 +78,7 @@ void update_velocity(List* a_flock){
     }
     if (num_of_boids_other_flocks != 0) {
       f_modifier = DETERRENCE_WEIGHT/(float)num_of_boids_other_flocks*f_modifier;
-      source->velocity = source->velocity + f_modifier;
+      source->velocity += f_modifier;
     }
     current_boid = current_boid->next;
   }
@@ -90,7 +90,7 @@ void update_pos(List* a_flock){
   NODE* current = a_flock->head;
   while (current != NULL){
     a_boid = (BOID*)(current->data);
-    a_boid->pos = a_boid->pos + a_boid->velocity;
+    a_boid->pos += a_boid->velocity;
     current = current->next;
   }
 }
@@ -104,8 +104,7 @@ void update_wing_rotation(List* a_flock){
     if (a_boid->wing_rotation > MAX_WING_ROTATION ||
         a_boid->wing_rotation < -MAX_WING_ROTATION)
       a_boid->wing_rotation_direction *= -1;
-    a_boid->wing_rotation += a_boid->wing_rotation_direction*
-                             WING_ROTATION_PER_FRAME;
+    a_boid->wing_rotation += a_boid->wing_rotation_direction* WING_ROTATION_PER_FRAME;
     current = current->next;
   }
 }
@@ -120,7 +119,7 @@ vec4 flock_centroid(List* a_flock){
   NODE* current = a_flock->head;
   vec4 centroid = dynamic_cast<vec4>(all_zero(4));
   while (current != NULL){
-     centroid = centroid + get_current_pos((BOID*)(current->data));
+     centroid += get_current_pos((BOID*)(current->data));
      current = current->next;
   }
   return centroid*(float)((1.0f/(float)a_flock->length));
@@ -176,9 +175,9 @@ void add_a_boid(List* a_flock){
 
   BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
   // spawning within the partner radius of the target
-  pos[0] = target->pos.x + (rand() % default_cube_length) - half_cube_length;
-  pos[1] = target->pos.y + (rand() % default_cube_length) - half_cube_length;
-  pos[2] = target->pos.z + (rand() % default_cube_length) - half_cube_length;
+  pos[0] = target->pos[0] + (rand() % default_cube_length) - half_cube_length;
+  pos[1] = target->pos[1] + (rand() % default_cube_length) - half_cube_length;
+  pos[2] = target->pos[2] + (rand() % default_cube_length) - half_cube_length;
   pos[3] = 1;
 
   list_insert(a_flock, new_boid(target->velocity, PARTNER_RADIUS, pos), 0);
@@ -271,7 +270,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
       v_modifier = normalize(v_modifier)*MAX_ATTRACTION_INFLUENCE;
     }
     v_modifier = ATTRACTION_WEIGHT*v_modifier;
-    ((BOID*)(current->data))->velocity = ((BOID*)(current->data))->velocity + v_modifier;
+    ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
 }

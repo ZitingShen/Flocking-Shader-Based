@@ -1,6 +1,5 @@
 #include "gl_replacement.h"
 
-//TODO: replace glMultMatrix and glTranslate
 void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
   vec3 forward_normal = normalize(vec3(centre[0] - eye[0],
                                        centre[1] - eye[1],
@@ -15,8 +14,8 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
               side_normal[2], up_normal[2], -forward_normal[2], 0,
               0,0,0,1};
 
-  glMultMatrixf(trans_matrix);
-  glTranslatef(-eye[0], -eye[1], -eye[2]); //move to eye
+  glTranslatef(trans_matrx, -eye[0], -eye[1], -eye[2]); //move to eye
+  glLoadMatrixf(trans_matrix);
 }
 
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
@@ -31,5 +30,46 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
         0, 0, -(zFar+zNear)/(zFar-zNear), -1,
         0, 0, -2*(zFar*zNear)/(zFar-zNear),0};
 
-  glMultMatrixf(trans_matrix);
+  glLoadMatrixf(trans_matrix);
+}
+
+void myTranslate(GLfloat[] current_matrix, GLfloat x, GLfloat y, GLfloat z) {
+  mat4 current(current_matrix);
+  mat4 trans = dynamic_cast<mat4>identity(4);
+  trans[3] = x;
+  trans[7] = y;
+  trans[11] = z;
+  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
+}
+
+void myRotate(GLfloat[] current_matrix, GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
+  GLfloat c = cos(angle);
+  GLfloat s = sin(angle);
+  vec3 axis(x, y, z);
+
+  axis = normalize(axis);
+  x = axis[0];
+  y = axis[1];
+  z = axis[2];
+  mat4 current(current_matrix);
+  mat4 trans = dynamic_cast<mat4>identity(4);
+  trans[0] = x*x*(1 - c) + c;
+  trans[1] = x*y*(1 - c) - z*s;
+  trans[2] = x*z*(1 - c) + y*s;
+  trans[4] = y*x*(1 - c) + z*s;
+  trans[5] = y*y*(1 - c) + c;
+  trans[6] = y*z*(1 - c) - x*s;
+  trans[8] = x*z*(1 - c) - y*s;
+  trans[9] = y*z*(1 - c) + x*s;
+  trans[10] = z*z*(1 - c) + c;
+  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
+}
+
+void myScale(GLfloat[] current_matrix, GLfloat x, GLfloat y, GLfloat z) {
+  mat4 current(current_matrix);
+  mat4 trans = dynamic_cast<mat4>identity(4);
+  trans[0] = x;
+  trans[5] = y;
+  trans[10] = z;
+  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
 }

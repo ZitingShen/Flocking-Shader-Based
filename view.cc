@@ -3,12 +3,12 @@
 
 void change_view(viewMode viewmode, int width, int height, List *flock, 
                 GOAL *goal) {
-  glm::vec4 center = flock_centroid(flock);
-  glm::vec4 midpoint = mid_point(flock, goal);
+  vec4 center = flock_centroid(flock);
+  vec4 midpoint = mid_point(flock, goal);
   float max_distance =  flock_radius(flock);
   float distance = get_d(flock, goal);
-  glm::vec4 camera_pos;
-  glm::vec4 flock_direction = glm::normalize(get_u(flock, goal));
+  vec4 camera_pos;
+  vec4 flock_direction = normalize(get_u(flock, goal));
 
   GLfloat eye[3];
   GLfloat centre[3];
@@ -103,6 +103,7 @@ void init_background(GLfloat squares_pos[][2]) {
   }
 }
 
+//TODO: change draw to shader_based
 void draw_background(GLfloat squares_pos[][2]) {
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_SQUARE);

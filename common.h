@@ -37,4 +37,11 @@
 
 #define BOID_SIZE                 100
 
+
+#define TOWER_HEIGHT              4000
+#define CAMERA_NEAR               0.1
+#define CAMERA_FAR                (TOWER_HEIGHT*200)
+
+#define BG_SQUARE_SIDE            2000.0
+#define BG_SQUARE_NUM             97   // must be an odd number
 #endif
