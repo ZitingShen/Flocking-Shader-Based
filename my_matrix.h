@@ -24,6 +24,7 @@
  * – transpose, inverse, trace, determinant
  */
 
+//TODO: distance, length, normalize
 class vec{
   protected:
     int width;

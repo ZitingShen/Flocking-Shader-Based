@@ -10,10 +10,13 @@
 #endif
 
 #include <glm/glm.hpp>
-
-#define	DEGREE_TO_RADIAN				0.00873
+#include "common.h"
 
 void myLookAt(GLfloat eye[3], GLfloat center[3], GLfloat up[3]);
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar);
+void myTranslate(GLfloat x, GLfloat y, GLfloat z);
+void myRotate(GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
+void myScale(GLfloat x, GLfloat y, GLfloat z);
+void myMultMatrix(mat4 trans_matrix);
 
 #endif
