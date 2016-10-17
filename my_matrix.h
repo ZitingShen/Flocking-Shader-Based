@@ -24,7 +24,6 @@
  * – transpose, inverse, trace, determinant
  */
 
-//TODO: distance, length, normalize
 class vec{
   protected:
     int width;
@@ -118,13 +117,21 @@ public vec{
 };
 
 vec* get_vec(int width, int height, float* data);
-vec* all_zero(int dimension);
-vec* identity(int dimension);
-vec* dot(const vec& vec_i, const vec& vec_ii);
+
 vec3 cross(const vec& vec_i, const vec& vec_ii);
 float distance(const vec& vec_i, const vec& vec_ii);
 float length(const vec& vec_i);
 vec3 normalise(const vec& vec_i);
 void unpack(const vec& vec_i, GLfloat arr[]);
+
+template <class V>
+V all_zero(int dimension);
+
+template <class V>
+V identity(int dimension);
+
+template <class V>
+V dot(const vec& vec_i, const vec& vec_ii); // no need to specify V when calling, as implicitly
+                                        // specified by the type of vec_i and vec_ii
 
 #endif
