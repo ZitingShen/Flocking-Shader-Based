@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 vec::vec(){
   this->data = NULL;
@@ -167,11 +168,11 @@ vec::~vec(){
   delete [] data;
 }
 
-int vec::get_height(){
+int vec::get_height() const{
   return this->height;
 }
 
-int vec::get_width(){
+int vec::get_width() const{
   return this->width;
 }
 
@@ -509,19 +510,19 @@ void vec::display(){
 }
 
 // dot and cross proudct
-vec* dot(vec* vec_i, vec* vec_ii){
-	if (vec_i->get_height() != vec_ii->get_width()){
+vec* dot(const vec& vec_i,const vec& vec_ii){
+	if (vec_i.get_height() != vec_ii.get_width()){
     std::cerr << "DOT: BAD MATRIX\n";
     NULL;
   }
   int sum = 0;
-	int dimension = vec_i->get_height();
-	vec* new_vec = new vec(vec_ii->get_width(), vec_i->get_height());
+	int dimension = vec_i.get_height();
+	vec* new_vec = new vec(vec_ii.get_width(), vec_i.get_height());
 	for (int i = 0; i<dimension; i++){
 		for (int j = 0; j<dimension; j++){
 			sum = 0;
 			for (int k = 0; k < dimension; k++){
-				sum += vec_i->data[i*vec_i->get_width() + k] * vec_ii->data[k*vec_ii->get_width() + j];
+				sum += vec_i.data[i*vec_i.get_width() + k] * vec_ii.data[k*vec_ii.get_width() + j];
 			}
 			(*new_vec)[i*dimension + j] = sum;
 		}
@@ -529,20 +530,59 @@ vec* dot(vec* vec_i, vec* vec_ii){
 	return new_vec;
 }
 
-vec* cross(vec* vec_i, vec* vec_ii){
-	if (vec_i->get_width() != 1 || vec_i->get_height() != 3 
-    || vec_ii->get_width() != 1 || vec_ii->get_height() != 3){
+vec3 cross(const vec& vec_i,const vec& vec_ii){
+	if (vec_i.get_width() != 1 || vec_i.get_height() != 3
+    || vec_ii.get_width() != 1 || vec_ii.get_height() != 3){
     std::cerr << "CROSS: BAD MATRIX\n";
-    NULL;
   }
-	float* a = vec_i->data;
-	float* b = vec_ii->data;
-	float* entries = new float[3];
+	float* a = vec_i.data;
+	float* b = vec_ii.data;
+	float entries[3];
   entries[0] = a[2]*b[3] - a[3]*b[2];
   entries[1] = a[3]*b[1] - a[1]*b[3];
 	entries[2] = a[1]*b[2] - a[2]*b[1];
-	vec* new_vec = get_vec(vec_ii->get_width(), vec_i->get_height(), entries);
+	vec3 new_vec(entries);
 	return new_vec;
+}
+
+float distance(const vec& vec_i, const vec& vec_ii){
+  assert(vec_i.get_height == 1 && vec_ii.get_height == 1
+         && (vec_i.get_width == 3 || vec_i.get_width == 4)
+         && (vec_ii.get_width == 3 || vec_ii.get_width == 4));
+  return sqrt((vec_i[0] - vec_ii[0])*(vec_i[0] - vec_ii[0])
+        +(vec_i[1] - vec_ii[1])*(vec_i[1] - vec_ii[1])
+        +(vec_i[2] - vec_ii[2])*(vec_i[2] - vec_ii[2]));
+}
+
+float length(const vec& vec_i){
+  assert(vec_i.get_height == 1);
+  float result = 0;
+  for (int i=0; i<vec_i.get_width();i++){
+    result += vec_i[i]*vec_i[i];
+  }
+  return sqrt(result);
+}
+
+vec3 normalise(const vec& vec_i){
+  assert(vec_i.get_height() == 1);
+  vec3 new_vec3;
+  float len = length(vec_i);
+  new_vec3.data[0] = vec_i[0] / len;
+  new_vec3.data[1] = vec_i[1] / len;
+  new_vec3.data[2] = vec_i[2] / len;
+  return new_vec3;
+}
+
+void unpack(const vec& vec_i, GLfloat arr[]){
+  int index = 0;
+  int count = 0;
+	for (int i = 0; i < vec_i.get_height(); i++) {
+		for (int j = 0; j < vec_i.get_width(); j++) {
+			index = i*vec_i.get_width() + j;
+			arr[count] = vec_i.data[index];
+		}
+	}
+
 }
 
 //generate identity or zeor matrix with specified dimension
