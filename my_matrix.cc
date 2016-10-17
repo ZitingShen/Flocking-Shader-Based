@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 vec::vec(){
   this->data = NULL;
@@ -167,11 +168,11 @@ vec::~vec(){
   delete [] data;
 }
 
-int vec::get_height(){
+int vec::get_height() const{
   return this->height;
 }
 
-int vec::get_width(){
+int vec::get_width() const{
   return this->width;
 }
 
@@ -508,87 +509,6 @@ void vec::display(){
 	}
 }
 
-// dot and cross proudct
-vec* dot(vec* vec_i, vec* vec_ii){
-	if (vec_i->get_height() != vec_ii->get_width()){
-    std::cerr << "DOT: BAD MATRIX\n";
-    NULL;
-  }
-  int sum = 0;
-	int dimension = vec_i->get_height();
-	vec* new_vec = new vec(vec_ii->get_width(), vec_i->get_height());
-	for (int i = 0; i<dimension; i++){
-		for (int j = 0; j<dimension; j++){
-			sum = 0;
-			for (int k = 0; k < dimension; k++){
-				sum += vec_i->data[i*vec_i->get_width() + k] * vec_ii->data[k*vec_ii->get_width() + j];
-			}
-			(*new_vec)[i*dimension + j] = sum;
-		}
-	}
-	return new_vec;
-}
-
-vec* cross(vec* vec_i, vec* vec_ii){
-	if (vec_i->get_width() != 1 || vec_i->get_height() != 3 
-    || vec_ii->get_width() != 1 || vec_ii->get_height() != 3){
-    std::cerr << "CROSS: BAD MATRIX\n";
-    NULL;
-  }
-	float* a = vec_i->data;
-	float* b = vec_ii->data;
-	float* entries = new float[3];
-  entries[0] = a[2]*b[3] - a[3]*b[2];
-  entries[1] = a[3]*b[1] - a[1]*b[3];
-	entries[2] = a[1]*b[2] - a[2]*b[1];
-	vec* new_vec = get_vec(vec_ii->get_width(), vec_i->get_height(), entries);
-	return new_vec;
-}
-
-//generate identity or zeor matrix with specified dimension
-vec* all_zero(int dimension){
-  if (dimension<=0 || dimension>4){
-    std::cerr << "ZERO: BAD DIMENSION\n";
-    return NULL;
-  }
-	switch(dimension){
-    case 2:
-      return new mat2::mat2(0,0,0,0);
-      break;
-    case 3:
-      return new mat3::mat3(0,0,0,
-                            0,0,0,
-                            0,0,0);
-      break;
-    case 4:
-      return new mat4::mat4(0,0,0,0,
-                            0,0,0,0,
-                            0,0,0,0,
-                            0,0,0,0);
-      break;
-    default:
-      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
-      return NULL;
-      break;
-  }
-}
-
-vec* identity(int dimension){
-  if (dimension<=0 || dimension>4){
-    std::cerr << "IDENTITY: BAD DIMENSION\n";
-    NULL;
-  }
-  int index = 0;
-  vec* new_vec = new vec(dimension, dimension);
-  for (int i=0; i<dimension; i++){
-    for (int j=0; j<dimension; j++){
-      index = i*dimension + j;
-      new_vec->data[index] = (index%(dimension+1) == 0)?1.0:0.0;
-    }
-  }
-  return new_vec;
-}
-
 vec* vec::promote(bool append_one){
   assert(this->width == 3 && (this->height == 3 || this->height == 1));
   float* m = this->data;
@@ -613,9 +533,6 @@ vec* vec::reduce(){
                     m[2], m[6], m[10]);
   }
 }
-
-
-
 
 vec* get_vec(int width, int height, float* data){
   switch(height){
@@ -651,3 +568,167 @@ vec* get_vec(int width, int height, float* data){
       break;
   }
 }
+
+// dot and cross proudct
+template <class V>
+V dot(const V& vec_i,const V& vec_ii){
+  if (vec_i.get_width() != vec_ii.get_width()
+      && (vec_i.get_height() != 1 || vec_ii.get_height() !=1)){
+    std::cerr << "DOT: BAD VECTOR\n";
+    return V();
+  }
+  switch(vec_i.get_width()){
+    case 2:
+      return vec2::vec2(vec_i[0]*vec_ii[0],
+                        vec_i[1]*vec_ii[1]);
+      break;
+    case 3:
+      return vec3::vec3(vec_i[0]*vec_ii[0],
+                        vec_i[1]*vec_ii[1],
+                        vec_i[2]*vec_ii[2]);
+      break;
+    case 4:
+      return vec4::vec4(vec_i[0]*vec_ii[0],
+                        vec_i[1]*vec_ii[1],
+                        vec_i[2]*vec_ii[2],
+                        vec_i[3]*vec_ii[3]);
+      break;
+    default:
+      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
+      return V();
+      break;
+  }
+}
+
+vec3 cross(const vec& vec_i,const vec& vec_ii){
+  if (vec_i.get_width() != 1 || vec_i.get_height() != 3
+    || vec_ii.get_width() != 1 || vec_ii.get_height() != 3){
+    std::cerr << "CROSS: BAD MATRIX\n";
+  }
+  float* a = vec_i.data;
+  float* b = vec_ii.data;
+  float entries[3];
+  entries[0] = a[2]*b[3] - a[3]*b[2];
+  entries[1] = a[3]*b[1] - a[1]*b[3];
+  entries[2] = a[1]*b[2] - a[2]*b[1];
+  vec3 new_vec(entries);
+  return new_vec;
+}
+
+float distance(const vec& vec_i, const vec& vec_ii){
+  assert(vec_i.get_height == 1 && vec_ii.get_height == 1
+         && (vec_i.get_width == 3 || vec_i.get_width == 4)
+         && (vec_ii.get_width == 3 || vec_ii.get_width == 4));
+  return sqrt((vec_i[0] - vec_ii[0])*(vec_i[0] - vec_ii[0])
+        +(vec_i[1] - vec_ii[1])*(vec_i[1] - vec_ii[1])
+        +(vec_i[2] - vec_ii[2])*(vec_i[2] - vec_ii[2]));
+}
+
+float length(const vec& vec_i){
+  assert(vec_i.get_height == 1);
+  float result = 0;
+  for (int i=0; i<vec_i.get_width();i++){
+    result += vec_i[i]*vec_i[i];
+  }
+  return sqrt(result);
+}
+
+vec3 normalise(const vec& vec_i){
+  assert(vec_i.get_height() == 1);
+  vec3 new_vec3;
+  float len = length(vec_i);
+  new_vec3.data[0] = vec_i[0] / len;
+  new_vec3.data[1] = vec_i[1] / len;
+  new_vec3.data[2] = vec_i[2] / len;
+  return new_vec3;
+}
+
+void unpack(const vec& vec_i, GLfloat arr[]){
+  int index = 0;
+  int count = 0;
+  for (int i = 0; i < vec_i.get_height(); i++) {
+    for (int j = 0; j < vec_i.get_width(); j++) {
+      index = i*vec_i.get_width() + j;
+      arr[count] = vec_i.data[index];
+    }
+  }
+
+}
+
+//generate identity or zeor matrix with specified dimension
+template <class V>
+V all_zero(int dimension){
+  if (dimension<=0 || dimension>4){
+    std::cerr << "ZERO: BAD DIMENSION\n";
+    return V();
+  }
+  switch(dimension){
+    case 2:
+      return mat2::mat2(0,0,0,0);
+      break;
+    case 3:
+      return mat3::mat3(0,0,0,
+                        0,0,0,
+                        0,0,0);
+      break;
+    case 4:
+      return mat4::mat4(0,0,0,0,
+                        0,0,0,0,
+                        0,0,0,0,
+                        0,0,0,0);
+      break;
+    default:
+      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
+      return V();
+      break;
+  }
+}
+
+template <class V>
+V identity(int dimension){
+  if (dimension<=0 || dimension>4){
+    std::cerr << "IDENTITY: BAD DIMENSION\n";
+    return V();
+  }
+  switch(dimension){
+    case 2:
+      return mat2::mat2(0,1,
+                        0,1);
+      break;
+    case 3:
+      return mat3::mat3(1,0,0,
+                        0,1,0,
+                        0,0,1);
+      break;
+    case 4:
+      return mat4::mat4(1,0,0,0,
+                        0,1,0,0,
+                        0,0,1,0,
+                        0,0,0,1);
+      break;
+    default:
+      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
+      return V();
+      break;
+  }
+}
+
+/*
+ *
+ *
+  int sum = 0  int dimension = vec_i.get_height();
+  vec* new_vec = new vec(vec_ii.get_width(), vec_i.get_height());
+  for (int i = 0; i<dimension; i++){
+    for (int j = 0; j<dimension; j++){
+      sum = 0;
+      for (int k = 0; k < dimension; k++){
+        sum += vec_i.data[i*vec_i.get_width() + k] * vec_ii.data[k*vec_ii.get_width() + j];
+      }
+      (*new_vec)[i*dimension + j] = sum;
+    }
+  }
+ *
+ *
+ *
+ *
+ */

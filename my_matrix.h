@@ -1,6 +1,14 @@
 #ifndef MY_MATRIX
 #define MY_MATRIX
 
+#ifdef __APPLE__
+#include <GLFW/glfw3.h>
+#include <OpenGL/glu.h>
+#else
+#include <GLFW/glfw3.h>
+#include <GL/glu.h>
+#endif
+
 #define VEC2 2
 #define VEC3 3
 #define VEC4 4
@@ -16,7 +24,6 @@
  * – transpose, inverse, trace, determinant
  */
 
-//TODO: distance, length, normalize
 class vec{
   protected:
     int width;
@@ -29,8 +36,8 @@ class vec{
     vec(int width, int height);
     ~vec();
 
-    int get_height();
-    int get_width();
+    int get_height() const;
+    int get_width() const;
     float determinant();
     vec* transpose();
     vec* inverse();
@@ -43,18 +50,12 @@ class vec{
     void operator-= (const vec& other);
     void operator++ (); // for doubling all values
     vec* operator*  (const float& scalar);
-    float& operator[] (const int index); // for assigning
-    const float& operator[] (const int index) const; // for accessing
+    float& operator[] (const int index); // mutator
+    const float& operator[] (const int index) const; // accessor
     void display(); // column-major display
     vec* promote(bool append_one);
     vec* reduce();
 };
-
-vec* get_vec(int width, int height, float* data);
-vec* all_zero(int dimension);
-vec* identity(int dimension);
-vec* dot(vec* vec_i, vec* vec_ii);
-vec* cross(vec* vec_i, vec* vec_ii);
 
 class vec2:
 public vec{
@@ -114,4 +115,23 @@ public vec{
        float c1, float c2, float c3, float c4,
        float d1, float d2, float d3, float d4);
 };
+
+vec* get_vec(int width, int height, float* data);
+
+vec3 cross(const vec& vec_i, const vec& vec_ii);
+float distance(const vec& vec_i, const vec& vec_ii);
+float length(const vec& vec_i);
+vec3 normalise(const vec& vec_i);
+void unpack(const vec& vec_i, GLfloat arr[]);
+
+template <class V>
+V all_zero(int dimension);
+
+template <class V>
+V identity(int dimension);
+
+template <class V>
+V dot(const vec& vec_i, const vec& vec_ii); // no need to specify V when calling, as implicitly
+                                        // specified by the type of vec_i and vec_ii
+
 #endif
