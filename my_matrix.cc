@@ -176,7 +176,7 @@ int vec::get_width() const{
   return this->width;
 }
 
-float vec::determinant(){
+float vec::determinant() const{
   assert(this->width > 1);
   float* m = this->data;
   if (this->width == 2){
@@ -198,14 +198,19 @@ float vec::determinant(){
   }
 }
 
-vec* vec::transpose(){
-  if (this->width <= 1){
-    std::cerr << "TRANSPOSE: BAD DIMENSION\n";
-    return NULL;
+float vec::trace() const{
+  assert(this->width == this->height);
+  float result = 0;
+  for (int i = 0; i < this->width; i++) {
+    result += this->data[i*width + i];
   }
-  vec* new_mat = new vec(this->width, this->height);
+  return result;
+}
+
+mat2 mat2::transpose(){
+  mat2 new_mat;
   float* m = this->data;
-  float* n = new_mat->data;
+  float* n = new_mat.data;
   for (int i=0; i<this->width; i++){
     for (int j=0; j<this->height; j++){
       n[j*this->height+i] = m[i*this->width+j];
@@ -214,191 +219,343 @@ vec* vec::transpose(){
   return new_mat;
 }
 
-vec* vec::inverse(){
-  assert(this->width > 1);
+mat3 mat3::transpose(){
+  mat3 new_mat;
+  float* m = this->data;
+  float* n = new_mat.data;
+  for (int i=0; i<this->width; i++){
+    for (int j=0; j<this->height; j++){
+      n[j*this->height+i] = m[i*this->width+j];
+    }
+  }
+  return new_mat;
+}
+
+mat4 mat4::transpose(){
+  mat4 new_mat;
+  float* m = this->data;
+  float* n = new_mat.data;
+  for (int i=0; i<this->width; i++){
+    for (int j=0; j<this->height; j++){
+      n[j*this->height+i] = m[i*this->width+j];
+    }
+  }
+  return new_mat;
+}
+
+mat2 mat2::inverse(){
   if (this->determinant() == 0){
     std::cerr << "INVERSE: BAD MATRIX\n";
-    return NULL;
+    return (*this);
   }
-  vec* new_mat = new vec(this->width, this->height);
-  float* m = new_mat->data;
+  mat2 new_mat;
+  float* m = new_mat.data;
   float* n = this->data;
-  float coeff = 1;
-  if (this->width == 2){
-    coeff = 1.0/(this->determinant());
-    m[0] = coeff * n[3];
-    m[1] = coeff * -n[1];
-    m[2] = coeff * -n[2];
-    m[3] = coeff * n[0];
-  }else
-  if (this->width == 3){
-    coeff = (1.0)/(this->determinant());
-    m[0] = coeff * mat2(n[4],n[5],n[7],n[8]).determinant();
-    m[1] = coeff * mat2(n[2],n[1],n[8],n[7]).determinant();
-    m[2] = coeff * mat2(n[1],n[2],n[4],n[5]).determinant();
-    m[3] = coeff * mat2(n[5],n[4],n[8],n[6]).determinant();
-    m[4] = coeff * mat2(n[0],n[2],n[4],n[5]).determinant();
-    m[5] = coeff * mat2(n[2],n[0],n[5],n[4]).determinant();
-    m[6] = coeff * mat2(n[3],n[4],n[6],n[7]).determinant();
-    m[7] = coeff * mat2(n[1],n[0],n[7],n[6]).determinant();
-    m[8] = coeff * mat2(n[0],n[1],n[3],n[4]).determinant();
-  }else{
-    assert(this->width == 4);
-    m[0] = n[5]  * n[10] * n[15] -
-           n[5]  * n[11] * n[14] -
-           n[9]  * n[6]  * n[15] +
-           n[9]  * n[7]  * n[14] +
-           n[13] * n[6]  * n[11] -
-           n[13] * n[7]  * n[10];
+  float coeff = (1.0f)/(this->determinant());
 
-    m[4] = -n[4]  * n[10] * n[15] +
-            n[4]  * n[11] * n[14] +
-            n[8]  * n[6]  * n[15] -
-            n[8]  * n[7]  * n[14] -
-            n[12] * n[6]  * n[11] +
-            n[12] * n[7]  * n[10];
+  m[0] = coeff * n[3];  m[1] = coeff * -n[1];
+  m[2] = coeff * -n[2]; m[3] = coeff * n[0];
+  return new_mat;
+}
 
-     m[8] = n[4]  * n[9] * n[15] -
-            n[4]  * n[11] * n[13] -
-            n[8]  * n[5] * n[15] +
-            n[8]  * n[7] * n[13] +
-            n[12] * n[5] * n[11] -
-            n[12] * n[7] * n[9];
-
-   m[12] = -n[4]  * n[9] * n[14] +
-            n[4]  * n[10] * n[13] +
-            n[8]  * n[5] * n[14] -
-            n[8]  * n[6] * n[13] -
-            n[12] * n[5] * n[10] +
-            n[12] * n[6] * n[9];
-
-    m[1] = -n[1]  * n[10] * n[15] +
-            n[1]  * n[11] * n[14] +
-            n[9]  * n[2] * n[15] -
-            n[9]  * n[3] * n[14] -
-            n[13] * n[2] * n[11] +
-            n[13] * n[3] * n[10];
-
-     m[5] = n[0]  * n[10] * n[15] -
-            n[0]  * n[11] * n[14] -
-            n[8]  * n[2] * n[15] +
-            n[8]  * n[3] * n[14] +
-            n[12] * n[2] * n[11] -
-            n[12] * n[3] * n[10];
-
-     m[9] = -n[0]  * n[9] * n[15] +
-             n[0]  * n[11] * n[13] +
-             n[8]  * n[1] * n[15] -
-             n[8]  * n[3] * n[13] -
-             n[12] * n[1] * n[11] +
-             n[12] * n[3] * n[9];
-
-     m[13] = n[0]  * n[9] * n[14] -
-             n[0]  * n[10] * n[13] -
-             n[8]  * n[1] * n[14] +
-             n[8]  * n[2] * n[13] +
-             n[12] * n[1] * n[10] -
-             n[12] * n[2] * n[9];
-
-      m[2] = n[1]  * n[6] * n[15] -
-             n[1]  * n[7] * n[14] -
-             n[5]  * n[2] * n[15] +
-             n[5]  * n[3] * n[14] +
-             n[13] * n[2] * n[7] -
-             n[13] * n[3] * n[6];
-
-      m[6] = -n[0]  * n[6] * n[15] +
-              n[0]  * n[7] * n[14] +
-              n[4]  * n[2] * n[15] -
-              n[4]  * n[3] * n[14] -
-              n[12] * n[2] * n[7] +
-              n[12] * n[3] * n[6];
-
-      m[10] = n[0]  * n[5] * n[15] -
-              n[0]  * n[7] * n[13] -
-              n[4]  * n[1] * n[15] +
-              n[4]  * n[3] * n[13] +
-              n[12] * n[1] * n[7] -
-              n[12] * n[3] * n[5];
-
-      m[14] = -n[0]  * n[5] * n[14] +
-               n[0]  * n[6] * n[13] +
-               n[4]  * n[1] * n[14] -
-               n[4]  * n[2] * n[13] -
-               n[12] * n[1] * n[6] +
-               n[12] * n[2] * n[5];
-
-      m[3] = -n[1] * n[6] * n[11] +
-              n[1] * n[7] * n[10] +
-              n[5] * n[2] * n[11] -
-              n[5] * n[3] * n[10] -
-              n[9] * n[2] * n[7] +
-              n[9] * n[3] * n[6];
-
-      m[7] = n[0] * n[6] * n[11] -
-             n[0] * n[7] * n[10] -
-             n[4] * n[2] * n[11] +
-             n[4] * n[3] * n[10] +
-             n[8] * n[2] * n[7] -
-             n[8] * n[3] * n[6];
-
-      m[11] = -n[0] * n[5] * n[11] +
-               n[0] * n[7] * n[9] +
-               n[4] * n[1] * n[11] -
-               n[4] * n[3] * n[9] -
-               n[8] * n[1] * n[7] +
-               n[8] * n[3] * n[5];
-
-      m[15] = n[0] * n[5] * n[10] -
-              n[0] * n[6] * n[9] -
-              n[4] * n[1] * n[10] +
-              n[4] * n[2] * n[9] +
-              n[8] * n[1] * n[6] -
-              n[8] * n[2] * n[5];
-      coeff = 1.0/ (n[0] * m[0] + n[1] * m[4] + n[2] * m[8] + n[3] * m[12]);
-      for (int i = 0; i < 16; i++){
-        m[i] = m[i] * coeff;
-	    }
+mat3 mat3::inverse(){
+  if (this->determinant() == 0){
+    std::cerr << "INVERSE: BAD MATRIX\n";
+    return (*this);
   }
-	return new_mat;
+  mat3 new_mat;
+  float* m = new_mat.data;
+  float* n = this->data;
+  float coeff = (1.0f)/(this->determinant());
+
+  m[0] = coeff * mat2(n[4],n[5],n[7],n[8]).determinant();
+  m[1] = coeff * mat2(n[2],n[1],n[8],n[7]).determinant();
+  m[2] = coeff * mat2(n[1],n[2],n[4],n[5]).determinant();
+  m[3] = coeff * mat2(n[5],n[4],n[8],n[6]).determinant();
+  m[4] = coeff * mat2(n[0],n[2],n[4],n[5]).determinant();
+  m[5] = coeff * mat2(n[2],n[0],n[5],n[4]).determinant();
+  m[6] = coeff * mat2(n[3],n[4],n[6],n[7]).determinant();
+  m[7] = coeff * mat2(n[1],n[0],n[7],n[6]).determinant();
+  m[8] = coeff * mat2(n[0],n[1],n[3],n[4]).determinant();
+
+  return new_mat;
 }
 
-float vec::trace() {
-	assert(this->width == this->height);
-	float result = 0;
-	for (int i = 0; i < this->width; i++) {
-		result += this->data[i*width + i];
-	}
-	return result;
+mat4 mat4::inverse(){
+  if (this->determinant() == 0){
+    std::cerr << "INVERSE: BAD MATRIX\n";
+    return (*this);
+  }
+  mat4 new_mat;
+  float* m = new_mat.data;
+  float* n = this->data;
+  float coeff = 1.0f;
+
+  m[0] = n[5]  * n[10] * n[15] -
+         n[5]  * n[11] * n[14] -
+         n[9]  * n[6]  * n[15] +
+         n[9]  * n[7]  * n[14] +
+         n[13] * n[6]  * n[11] -
+         n[13] * n[7]  * n[10];
+
+  m[4] = -n[4]  * n[10] * n[15] +
+          n[4]  * n[11] * n[14] +
+          n[8]  * n[6]  * n[15] -
+          n[8]  * n[7]  * n[14] -
+          n[12] * n[6]  * n[11] +
+          n[12] * n[7]  * n[10];
+
+  m[8] = n[4]  * n[9] * n[15] -
+         n[4]  * n[11] * n[13] -
+         n[8]  * n[5] * n[15] +
+         n[8]  * n[7] * n[13] +
+         n[12] * n[5] * n[11] -
+         n[12] * n[7] * n[9];
+
+  m[12] = -n[4]  * n[9] * n[14] +
+           n[4]  * n[10] * n[13] +
+           n[8]  * n[5] * n[14] -
+           n[8]  * n[6] * n[13] -
+           n[12] * n[5] * n[10] +
+           n[12] * n[6] * n[9];
+
+  m[1] = -n[1]  * n[10] * n[15] +
+          n[1]  * n[11] * n[14] +
+          n[9]  * n[2] * n[15] -
+          n[9]  * n[3] * n[14] -
+          n[13] * n[2] * n[11] +
+          n[13] * n[3] * n[10];
+
+  m[5] = n[0]  * n[10] * n[15] -
+         n[0]  * n[11] * n[14] -
+         n[8]  * n[2] * n[15] +
+         n[8]  * n[3] * n[14] +
+         n[12] * n[2] * n[11] -
+         n[12] * n[3] * n[10];
+
+  m[9] = -n[0]  * n[9] * n[15] +
+          n[0]  * n[11] * n[13] +
+          n[8]  * n[1] * n[15] -
+          n[8]  * n[3] * n[13] -
+          n[12] * n[1] * n[11] +
+          n[12] * n[3] * n[9];
+
+  m[13] = n[0]  * n[9] * n[14] -
+          n[0]  * n[10] * n[13] -
+          n[8]  * n[1] * n[14] +
+          n[8]  * n[2] * n[13] +
+          n[12] * n[1] * n[10] -
+          n[12] * n[2] * n[9];
+
+  m[2] = n[1]  * n[6] * n[15] -
+         n[1]  * n[7] * n[14] -
+         n[5]  * n[2] * n[15] +
+         n[5]  * n[3] * n[14] +
+         n[13] * n[2] * n[7] -
+         n[13] * n[3] * n[6];
+
+  m[6] = -n[0]  * n[6] * n[15] +
+          n[0]  * n[7] * n[14] +
+          n[4]  * n[2] * n[15] -
+          n[4]  * n[3] * n[14] -
+          n[12] * n[2] * n[7] +
+          n[12] * n[3] * n[6];
+
+  m[10] = n[0]  * n[5] * n[15] -
+          n[0]  * n[7] * n[13] -
+          n[4]  * n[1] * n[15] +
+          n[4]  * n[3] * n[13] +
+          n[12] * n[1] * n[7] -
+          n[12] * n[3] * n[5];
+
+  m[14] = -n[0]  * n[5] * n[14] +
+           n[0]  * n[6] * n[13] +
+           n[4]  * n[1] * n[14] -
+           n[4]  * n[2] * n[13] -
+           n[12] * n[1] * n[6] +
+           n[12] * n[2] * n[5];
+
+  m[3] = -n[1] * n[6] * n[11] +
+          n[1] * n[7] * n[10] +
+          n[5] * n[2] * n[11] -
+          n[5] * n[3] * n[10] -
+          n[9] * n[2] * n[7] +
+          n[9] * n[3] * n[6];
+
+  m[7] = n[0] * n[6] * n[11] -
+         n[0] * n[7] * n[10] -
+         n[4] * n[2] * n[11] +
+         n[4] * n[3] * n[10] +
+         n[8] * n[2] * n[7] -
+         n[8] * n[3] * n[6];
+
+  m[11] = -n[0] * n[5] * n[11] +
+           n[0] * n[7] * n[9] +
+           n[4] * n[1] * n[11] -
+           n[4] * n[3] * n[9] -
+           n[8] * n[1] * n[7] +
+           n[8] * n[3] * n[5];
+
+  m[15] = n[0] * n[5] * n[10] -
+          n[0] * n[6] * n[9] -
+          n[4] * n[1] * n[10] +
+          n[4] * n[2] * n[9] +
+          n[8] * n[1] * n[6] -
+          n[8] * n[2] * n[5];
+
+  coeff = 1.0/ (n[0] * m[0] + n[1] * m[4] + n[2] * m[8] + n[3] * m[12]);
+  for (int i = 0; i < 16; i++){
+    m[i] = m[i] * coeff;
+  }
+
+  return new_mat;
 }
 
-vec* vec::operator+ (const vec& other) {
-	assert(this->width == other.width && this->height == other.height);
-	vec* new_vec = new vec(this->width, this->height);
+vec2 vec2::operator+ (const vec2& other){
+	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
 		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec->data[index] = this->data[index] + other.data[index];
+			new_vec.data[index] = this->data[index] + other.data[index];
 		}
 	}
 	return new_vec;
 }
 
-vec* vec::operator- (const vec& other) {
-	assert(this->width == other.width && this->height == other.height);
-	vec* new_vec = new vec(this->width, this->height);
+vec2 vec2::operator- (const vec2& other){
+	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
 		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec->data[index] = this->data[index] - other.data[index];
+			new_vec.data[index] = this->data[index] - other.data[index];
 		}
 	}
 	return new_vec;
 }
 
-bool vec::operator== (const vec& other) {
+vec3 vec3::operator+ (const vec3& other){
+  vec3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] + other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+vec3 vec3::operator- (const vec3& other){
+  vec3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] - other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+vec4 vec4::operator+ (const vec4& other){
+  vec4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] + other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+vec4 vec4::operator- (const vec4& other){
+  vec4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] - other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat2 mat2::operator+ (const mat2& other){
+  mat2 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] + other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat2 mat2::operator- (const mat2& other){
+  mat2 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] - other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat3 mat3::operator+ (const mat3& other){
+  mat3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] + other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat3 mat3::operator- (const mat3& other){
+  mat3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] - other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat4 mat4::operator+ (const mat4& other){
+  mat4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] + other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+mat4 mat4::operator- (const mat4& other){
+  mat4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] - other.data[index];
+    }
+  }
+  return new_vec;
+}
+
+bool vec::operator== (const vec& other) const{
 	if (!(this->width == other.width && this->height == other.height)) return false;
 	int index = 0;
 	bool same = true;
@@ -478,16 +635,76 @@ void vec::operator++ (){
   }
 }
 
-vec* vec::operator* (const float& scalar) {
-	vec* new_vec = new vec(this->width, this->height);
+vec2 vec2::operator* (const float& scalar) {
+	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
 		for (int j = 0; j < this->width; j++) {
 			index = i*this->width + j;
-			new_vec->data[index] = this->data[index] * scalar;
+			new_vec.data[index] = this->data[index] * scalar;
 		}
 	}
 	return new_vec;
+}
+
+vec3 vec3::operator* (const float& scalar) {
+  vec3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] * scalar;
+    }
+  }
+  return new_vec;
+}
+
+vec4 vec4::operator* (const float& scalar) {
+  vec4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] * scalar;
+    }
+  }
+  return new_vec;
+}
+
+mat2 mat2::operator* (const float& scalar) {
+  mat2 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] * scalar;
+    }
+  }
+  return new_vec;
+}
+
+mat3 mat3::operator* (const float& scalar) {
+  mat3 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] * scalar;
+    }
+  }
+  return new_vec;
+}
+
+mat4 mat4::operator* (const float& scalar) {
+  mat4 new_vec;
+  int index = 0;
+  for (int i = 0; i < this->height; i++) {
+    for (int j = 0; j < this->width; j++) {
+      index = i*this->width + j;
+      new_vec.data[index] = this->data[index] * scalar;
+    }
+  }
+  return new_vec;
 }
 
 float& vec::operator[] (const int index){
@@ -500,7 +717,7 @@ const float& vec::operator[] (const int index) const{
   return this->data[index];
 }
 
-void vec::display(){
+void vec::display() const{
 	for (int i=0; i<this->height; i++){
 		for (int j=0; j<this->width; j++){
 			printf("%lf ", this->data[i*this->width + j]);
@@ -509,95 +726,49 @@ void vec::display(){
 	}
 }
 
-vec* vec::promote(bool append_one){
-  assert(this->width == 3 && (this->height == 3 || this->height == 1));
+vec4 vec3::promote(bool append_one){
   float* m = this->data;
-  if (this->height == 1){
-    return new vec4(m[0], m[1], m[2], append_one?1:0);
-  }else{
-  return new mat4(m[0], m[3], m[6], 0,
-                  m[1], m[4], m[7], 0,
-                  m[2], m[5], m[8], 0,
-                  0,0,0, append_one?1:0);
-  }
+  return vec4(m[0], m[1], m[2], append_one?1:0);
 }
 
-vec* vec::reduce(){
-  assert(this->width == 4 && (this->height == 4 || this->height == 1));
+mat4 mat3::promote(bool append_one){
   float* m = this->data;
-  if (this->height == 1){
-    return new vec3(m[0], m[1], m[2]);
-  }else{
-    return new mat3(m[0], m[4], m[8],
-                    m[1], m[5], m[9],
-                    m[2], m[6], m[10]);
-  }
+  return mat4(m[0], m[3], m[6], 0,
+              m[1], m[4], m[7], 0,
+              m[2], m[5], m[8], 0,
+              0,0,0, append_one?1:0);
 }
 
-vec* get_vec(int width, int height, float* data){
-  switch(height){
-    case 1:
-      switch(width){
-        case 2:
-          return new vec2::vec2(data);
-          break;
-        case 3:
-          return new vec3::vec3(data);
-          break;
-        case 4:
-          return new vec4::vec4(data);
-          break;
-        default: // should not happen
-          std::cerr << "VEC CONSTRUCTOR: BAD WIDTH\n";
-          return NULL;
-          break;
-        break;
-      }
-    case 2:
-      return new mat2::mat2(data);
-      break;
-    case 3:
-      return new mat3::mat3(data);
-      break;
-    case 4:
-      return new mat4::mat4(data);
-      break;
-    default: // should not happen
-      std::cerr << "VEC CONSTRUCTOR: BAD HEIGHT\n";
-      return NULL;
-      break;
-  }
+vec3 vec4::reduce(){
+  float* m = this->data;
+  return vec3(m[0], m[1], m[2]);
+}
+
+mat3 mat4::reduce(){
+  float* m = this->data;
+  return mat3(m[0], m[4], m[8],
+              m[1], m[5], m[9],
+              m[2], m[6], m[10]);
 }
 
 // dot and cross proudct
-template <class V>
-V dot(const V& vec_i,const V& vec_ii){
-  if (vec_i.get_width() != vec_ii.get_width()
-      && (vec_i.get_height() != 1 || vec_ii.get_height() !=1)){
-    std::cerr << "DOT: BAD VECTOR\n";
-    return V();
-  }
-  switch(vec_i.get_width()){
-    case 2:
-      return vec2::vec2(vec_i[0]*vec_ii[0],
-                        vec_i[1]*vec_ii[1]);
-      break;
-    case 3:
-      return vec3::vec3(vec_i[0]*vec_ii[0],
-                        vec_i[1]*vec_ii[1],
-                        vec_i[2]*vec_ii[2]);
-      break;
-    case 4:
-      return vec4::vec4(vec_i[0]*vec_ii[0],
-                        vec_i[1]*vec_ii[1],
-                        vec_i[2]*vec_ii[2],
-                        vec_i[3]*vec_ii[3]);
-      break;
-    default:
-      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
-      return V();
-      break;
-  }
+
+vec2 dot(const vec2& vec_i, const vec2& vec_ii){
+  return vec2::vec2(vec_i[0]*vec_ii[0],
+                    vec_i[1]*vec_ii[1]);
+}
+
+vec3 dot(const vec3& vec_i, const vec3& vec_ii){
+  return vec3::vec3(vec_i[0]*vec_ii[0],
+                    vec_i[1]*vec_ii[1],
+                    vec_i[2]*vec_ii[2]);
+}
+
+vec4 dot(const vec4& vec_i, const vec4& vec_ii){
+  return vec4::vec4(vec_i[0]*vec_ii[0],
+                    vec_i[1]*vec_ii[1],
+                    vec_i[2]*vec_ii[2],
+                    vec_i[3]*vec_ii[3]);
 }
 
 vec3 cross(const vec& vec_i,const vec& vec_ii){
@@ -616,16 +787,16 @@ vec3 cross(const vec& vec_i,const vec& vec_ii){
 }
 
 float distance(const vec& vec_i, const vec& vec_ii){
-  assert(vec_i.get_height == 1 && vec_ii.get_height == 1
-         && (vec_i.get_width == 3 || vec_i.get_width == 4)
-         && (vec_ii.get_width == 3 || vec_ii.get_width == 4));
+  assert(vec_i.get_height() == 1 && vec_ii.get_height() == 1
+         && (vec_i.get_width() == 3 || vec_i.get_width() == 4)
+         && (vec_ii.get_width() == 3 || vec_ii.get_width() == 4));
   return sqrt((vec_i[0] - vec_ii[0])*(vec_i[0] - vec_ii[0])
         +(vec_i[1] - vec_ii[1])*(vec_i[1] - vec_ii[1])
         +(vec_i[2] - vec_ii[2])*(vec_i[2] - vec_ii[2]));
 }
 
 float length(const vec& vec_i){
-  assert(vec_i.get_height == 1);
+  assert(vec_i.get_height() == 1);
   float result = 0;
   for (int i=0; i<vec_i.get_width();i++){
     result += vec_i[i]*vec_i[i];
@@ -656,79 +827,42 @@ void unpack(const vec& vec_i, GLfloat arr[]){
 }
 
 //generate identity or zeor matrix with specified dimension
-template <class V>
-V all_zero(int dimension){
-  if (dimension<=0 || dimension>4){
-    std::cerr << "ZERO: BAD DIMENSION\n";
-    return V();
-  }
-  switch(dimension){
-    case 2:
-      return mat2::mat2(0,0,0,0);
-      break;
-    case 3:
-      return mat3::mat3(0,0,0,
-                        0,0,0,
-                        0,0,0);
-      break;
-    case 4:
-      return mat4::mat4(0,0,0,0,
-                        0,0,0,0,
-                        0,0,0,0,
-                        0,0,0,0);
-      break;
-    default:
-      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
-      return V();
-      break;
-  }
+mat2 all_zero_mat2(mat2 m){
+  return m;
 }
 
-template <class V>
-V identity(int dimension){
-  if (dimension<=0 || dimension>4){
-    std::cerr << "IDENTITY: BAD DIMENSION\n";
-    return V();
-  }
-  switch(dimension){
-    case 2:
-      return mat2::mat2(0,1,
-                        0,1);
-      break;
-    case 3:
-      return mat3::mat3(1,0,0,
-                        0,1,0,
-                        0,0,1);
-      break;
-    case 4:
-      return mat4::mat4(1,0,0,0,
-                        0,1,0,0,
-                        0,0,1,0,
-                        0,0,0,1);
-      break;
-    default:
-      std::cerr << "ALL_ZERO: BAD DIMENSION\n";
-      return V();
-      break;
-  }
+mat3 all_zero_mat3(mat3 m){
+  return m;
 }
 
-/*
- *
- *
-  int sum = 0  int dimension = vec_i.get_height();
-  vec* new_vec = new vec(vec_ii.get_width(), vec_i.get_height());
+mat4 all_zero_mat4(mat4 m){
+  return m;
+}
+
+mat2 identity_mat2(mat2 m){
+  return m;
+}
+
+mat3 identity_mat3(mat3 m){
+  return m;
+}
+
+mat4 identity_mat4(mat4 m){
+  return m;
+}
+
+mat4 multiply(const mat4& m_i, const mat4& m_ii){
+  int sum = 0;
+  int dimension = m_i.get_height();
+  mat4 new_mat = mat4(m_i.get_width(), m_ii.get_height());
   for (int i = 0; i<dimension; i++){
     for (int j = 0; j<dimension; j++){
       sum = 0;
       for (int k = 0; k < dimension; k++){
-        sum += vec_i.data[i*vec_i.get_width() + k] * vec_ii.data[k*vec_ii.get_width() + j];
+        sum += m_i.data[i*m_i.get_width() + k] * m_ii.data[k*m_ii.get_width() + j];
       }
-      (*new_vec)[i*dimension + j] = sum;
+      new_mat[i*dimension + j] = sum;
     }
   }
- *
- *
- *
- *
- */
+  return new_mat;
+}
