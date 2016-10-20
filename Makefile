@@ -4,18 +4,18 @@ else
 LDFLAGS=-lX11 -lGL -lGLU -lglfw -lGLEW -lm
 endif
 CC = g++
-CFLAGS=-g -Wall -I/usr/local/Cellar/glfw3/3.2.1/include
+CFLAGS=-g -Wall -std=c++11 -I/usr/local/Cellar/glfw3/3.2.1/include
 
-TARGET = flocking
+TARGET = my_matrix_test
 SRC = $(TARGET).cc
-LIB = gl_replacement.o my_matrix.o
-all: flocking
+LIB = my_matrix.o
+all: my_matrix_test
 
-flocking: $(SRC) $(LIB)
+my_matrix_test: $(SRC) $(LIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(SRC) $(LIB)
 
-gl_replacement.o: gl_replacement.cc gl_replacement.h
-	$(CC) $(CFLAGS) -c gl_replacement.cc
+#gl_replacement.o: gl_replacement.cc gl_replacement.h
+#	$(CC) $(CFLAGS) -c gl_replacement.cc
 
 my_matrix.o: my_matrix.cc my_matrix.h
 	$(CC) $(CFLAGS) -c my_matrix.cc
