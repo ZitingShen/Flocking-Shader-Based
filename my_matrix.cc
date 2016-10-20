@@ -752,36 +752,24 @@ mat3 mat4::reduce(){
 }
 
 // dot and cross proudct
-
-vec2 dot(const vec2& vec_i, const vec2& vec_ii){
-  return vec2::vec2(vec_i[0]*vec_ii[0],
-                    vec_i[1]*vec_ii[1]);
-}
-
-vec3 dot(const vec3& vec_i, const vec3& vec_ii){
-  return vec3::vec3(vec_i[0]*vec_ii[0],
-                    vec_i[1]*vec_ii[1],
-                    vec_i[2]*vec_ii[2]);
-}
-
-vec4 dot(const vec4& vec_i, const vec4& vec_ii){
-  return vec4::vec4(vec_i[0]*vec_ii[0],
-                    vec_i[1]*vec_ii[1],
-                    vec_i[2]*vec_ii[2],
-                    vec_i[3]*vec_ii[3]);
-}
-
-vec3 cross(const vec& vec_i,const vec& vec_ii){
-  if (vec_i.get_width() != 1 || vec_i.get_height() != 3
-    || vec_ii.get_width() != 1 || vec_ii.get_height() != 3){
-    std::cerr << "CROSS: BAD MATRIX\n";
+float dot(const vec& vec_i, const vec& vec_ii){
+  assert(vec_i.get_height() == 1 &&  vec_ii.get_height() == 1
+          && vec_i.get_width() == vec_ii.get_width());
+  int size = vec_i.get_width();
+  float result = 0;
+  for (int i=0; i<size; i++){
+    result += (vec_i[i] * vec_ii[i]);
   }
+  return result;
+}
+
+vec3 cross(const vec3& vec_i,const vec3& vec_ii){
   float* a = vec_i.data;
   float* b = vec_ii.data;
   float entries[3];
-  entries[0] = a[2]*b[3] - a[3]*b[2];
-  entries[1] = a[3]*b[1] - a[1]*b[3];
-  entries[2] = a[1]*b[2] - a[2]*b[1];
+  entries[0] = a[1]*b[2] - a[2]*b[1];
+  entries[1] = a[2]*b[0] - a[0]*b[2];
+  entries[2] = a[0]*b[1] - a[1]*b[0];
   vec3 new_vec(entries);
   return new_vec;
 }
@@ -798,7 +786,8 @@ float distance(const vec& vec_i, const vec& vec_ii){
 float length(const vec& vec_i){
   assert(vec_i.get_height() == 1);
   float result = 0;
-  for (int i=0; i<vec_i.get_width();i++){
+  int len = vec_i.get_width() > 3 ? 3:vec_i.get_width();
+  for (int i=0; i<len;i++){
     result += vec_i[i]*vec_i[i];
   }
   return sqrt(result);
@@ -814,6 +803,12 @@ vec3 normalise(const vec& vec_i){
   return new_vec3;
 }
 
+float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal){
+  float angle = acos(dot(normalise(vec_i), normalise(vec_ii)));
+  bool pos_ang = dot(cross(vec_i, vec_ii), normal) > 0;
+  return pos_ang?angle:-angle;
+}
+
 void unpack(const vec& vec_i, GLfloat arr[]){
   int index = 0;
   int count = 0;
@@ -823,7 +818,6 @@ void unpack(const vec& vec_i, GLfloat arr[]){
       arr[count] = vec_i.data[index];
     }
   }
-
 }
 
 //generate identity or zeor matrix with specified dimension

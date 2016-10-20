@@ -49,7 +49,7 @@ class vec{
     float determinant() const;
     float trace() const;
     bool operator== (const vec& other) const;
-    void operator= (const vec& other);
+    void operator= (const vec& other); // cant use for chain assignment; but can be used by child class
     void operator+= (const vec& other);
     void operator-= (const vec& other);
     void operator++ (); // for doubling all values
@@ -144,12 +144,14 @@ public vec{
   mat3 reduce();
 };
 
-vec3 cross(const vec& vec_i, const vec& vec_ii);
+vec3 cross(const vec3& vec_i, const vec3& vec_ii);
 mat4 multiply(const mat4& m_i, const mat4& m_ii);
 
+float dot(const vec& vec_i, const vec& vec_ii);
 float distance(const vec& vec_i, const vec& vec_ii);
-float length(const vec& vec_i);
-vec3 normalise(const vec& vec_i);
+float length(const vec& vec_i);   // OK to give a vec2, vec3, vec4
+vec3 normalise(const vec& vec_i); // OK to give a vec4
+float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal); //returns angle in RADIAN
 void unpack(const vec& vec_i, GLfloat arr[]);
 
 mat2 all_zero_mat2(mat2 m = mat2(0,0,
@@ -171,10 +173,5 @@ mat4 identity_mat4(mat4 m = mat4(1,0,0,0,
                             0,1,0,0,
                             0,0,1,0,
                             0,0,0,1));
-
-vec2 dot(const vec2& vec_i, const vec2& vec_ii);
-vec3 dot(const vec3& vec_i, const vec3& vec_ii);
-vec4 dot(const vec4& vec_i, const vec4& vec_ii);
-                                        
 
 #endif
