@@ -1,10 +1,10 @@
 #include "gl_replacement.h"
 
 void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
-  vec3 forward_normal = normalize(vec3(centre[0] - eye[0],
+  vec3 forward_normal = normalise(vec3(centre[0] - eye[0],
                                        centre[1] - eye[1],
                                        centre[2] - eye[2]));
-  vec3 side_normal = normalize(cross(forward_normal, vec3(up[0],up[1],up[2])));
+  vec3 side_normal = normalise(cross(forward_normal, vec3(up[0],up[1],up[2])));
 
   vec3 up_normal = cross(side_normal, forward_normal);
 
@@ -14,7 +14,7 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
               side_normal[2], up_normal[2], -forward_normal[2], 0,
               0,0,0,1};
 
-  glTranslatef(trans_matrx, -eye[0], -eye[1], -eye[2]); //move to eye
+  myTranslate(trans_matrix, -eye[0], -eye[1], -eye[2]); //move to eye
   glLoadMatrixf(trans_matrix);
 }
 
@@ -33,26 +33,27 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
   glLoadMatrixf(trans_matrix);
 }
 
-void myTranslate(GLfloat[] current_matrix, GLfloat x, GLfloat y, GLfloat z) {
+void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   mat4 current(current_matrix);
-  mat4 trans = dynamic_cast<mat4>identity(4);
+  mat4 trans = identity_mat4();
   trans[3] = x;
   trans[7] = y;
   trans[11] = z;
-  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
+  unpack(multiply(current, trans), current_matrix);
+  glLoadMatrixf(current_matrix);
 }
 
-void myRotate(GLfloat[] current_matrix, GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
+void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
   GLfloat c = cos(angle);
   GLfloat s = sin(angle);
   vec3 axis(x, y, z);
 
-  axis = normalize(axis);
+  axis = normalise(axis);
   x = axis[0];
   y = axis[1];
   z = axis[2];
   mat4 current(current_matrix);
-  mat4 trans = dynamic_cast<mat4>identity(4);
+  mat4 trans = identity_mat4();
   trans[0] = x*x*(1 - c) + c;
   trans[1] = x*y*(1 - c) - z*s;
   trans[2] = x*z*(1 - c) + y*s;
@@ -62,14 +63,16 @@ void myRotate(GLfloat[] current_matrix, GLfloat angle, GLfloat x, GLfloat y, GLf
   trans[8] = x*z*(1 - c) - y*s;
   trans[9] = y*z*(1 - c) + x*s;
   trans[10] = z*z*(1 - c) + c;
-  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
+  unpack(multiply(current, trans), current_matrix);
+  glLoadMatrixf(current_matrix);
 }
 
-void myScale(GLfloat[] current_matrix, GLfloat x, GLfloat y, GLfloat z) {
+void myScale(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   mat4 current(current_matrix);
-  mat4 trans = dynamic_cast<mat4>identity(4);
+  mat4 trans = identity_mat4();
   trans[0] = x;
   trans[5] = y;
   trans[10] = z;
-  glLoadMatrixf(unpack(&multiply(current, trans), current_matrix));
+  unpack(multiply(current, trans), current_matrix);
+  glLoadMatrixf(current_matrix);
 }

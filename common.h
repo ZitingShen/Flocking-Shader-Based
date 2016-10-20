@@ -33,13 +33,17 @@
 #define RANDOMISE_V_FACTOR        45
 #define SPAWN_CUBE_LENGTH         100.0
 
-#define SHADES_HEIGHT             50.0
-
 #define BOID_SIZE                 100
 
 
+#define DEFAULT_ACCELERATION_FACTOR    0.1
+#define DEFAULT_ACCELERATION_MARGIN   0.05
+#define TRUE  1
+#define FALSE 0
+
+
 #define TOWER_HEIGHT              4000
-#define CAMERA_NEAR               0.1
+#define CAMERA_NEAR               2
 #define CAMERA_FAR                (TOWER_HEIGHT*200)
 
 #define BG_SQUARE_SIDE            2000.0

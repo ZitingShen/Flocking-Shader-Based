@@ -35,7 +35,10 @@ void update_velocity(List* a_flock){
   if (a_flock == NULL || a_flock->length < 2) return;
   NODE* current_boid = a_flock->head;
   NODE* potential_partner;
-  vec4 s_modifier, a_modifier, c_modifier, f_modifier;
+  vec4 s_modifier(0, 0, 0, 0);
+  vec4 a_modifier(0, 0, 0, 0);
+  vec4 c_modifier(0, 0, 0, 0);
+  vec4 f_modifier(0, 0, 0, 0);
   int num_of_partners;
   int num_of_boids_other_flocks;
 
@@ -44,10 +47,6 @@ void update_velocity(List* a_flock){
   while (current_boid != NULL){
     num_of_partners = 0; //reset for the next boid
     num_of_boids_other_flocks = 0;
-    s_modifier = dynamic_cast<vec4>(all_zero(4));
-    a_modifier = s_modifier;
-    c_modifier = s_modifier;
-    f_modifier = s_modifier;
     potential_partner = a_flock->head;
     num_of_partners = 0;
     while (potential_partner != NULL){
@@ -71,13 +70,13 @@ void update_velocity(List* a_flock){
       potential_partner = potential_partner->next;
     }
     if (num_of_partners != 0) {
-      s_modifier = SEPARATION_WEIGHT/(float)num_of_partners*s_modifier;
-      a_modifier = ALIGNMENT_WEIGHT*(a_modifier*(1/(float)num_of_partners) - source->velocity);
-      c_modifier = COHESION_WEIGHT*(c_modifier*(1/(float)num_of_partners) - source->pos);
+      s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners);
+      a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT;
+      c_modifier = (c_modifier*(1/(float)num_of_partners) - source->pos)*COHESION_WEIGHT;
       source->velocity = source->velocity + s_modifier + a_modifier + c_modifier;
     }
     if (num_of_boids_other_flocks != 0) {
-      f_modifier = DETERRENCE_WEIGHT/(float)num_of_boids_other_flocks*f_modifier;
+      f_modifier = f_modifier*(DETERRENCE_WEIGHT/(float)num_of_boids_other_flocks);
       source->velocity += f_modifier;
     }
     current_boid = current_boid->next;
@@ -115,9 +114,9 @@ vec4 get_current_pos(BOID* a_boid){
 
 vec4 flock_centroid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0)
-    return dynamic_cast<vec4>(all_zero(4));
+    return vec4(0, 0, 0, 1);
   NODE* current = a_flock->head;
-  vec4 centroid = dynamic_cast<vec4>(all_zero(4));
+  vec4 centroid = vec4(0, 0, 0, 1);
   while (current != NULL){
      centroid += get_current_pos((BOID*)(current->data));
      current = current->next;
@@ -127,13 +126,13 @@ vec4 flock_centroid(List* a_flock){
 
 vec4 mid_point(List* a_flock, GOAL* a_goal){
   if (a_flock == NULL || a_flock->length == 0)
-    return dynamic_cast<vec4>(all_zero(4));
+    return vec4(0, 0, 0, 1);
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
 }
 
 vec4 get_u(List* a_flock, GOAL* a_goal){
   if (a_flock == NULL || a_flock->length == 0)
-    return dynamic_cast<vec4>(all_zero(4));
+    return vec4(0, 0, 0, 0);
   return (a_goal->pos - flock_centroid(a_flock));
 }
 
@@ -215,22 +214,20 @@ void draw_a_flock(List* a_flock){
   for (int i = 0; i < a_flock->length; i++){
 
     some_boid = (BOID*)(current->data);
-    glm::vec3 velocity3(some_boid->velocity);
-    velocity3 = glm::normalize(velocity3);
-    glm::vec3 initial3(SPAWN_VELOCITY);
-    initial3 = glm::normalize(initial3);
-    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
-    float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal)*RADIAN_TO_DEGREE;
-    float shades_angle = glm::orientedAngle(initial3, velocity3, 
-                                            glm::vec3(0, 0, 1))*RADIAN_TO_DEGREE;
+    vec3 velocity3 = normalise(some_boid->velocity.reduce());
+    vec3 initial3 = normalise(((vec4) SPAWN_VELOCITY).reduce());
+    vec3 rotate_normal = normalise(cross(velocity3, initial3));
+    float angle = oriented_angle(initial3, velocity3, 
+                                rotate_normal)*RADIAN_TO_DEGREE;
+    float shades_angle = oriented_angle(initial3, velocity3, 
+                                       vec3(0, 0, 1))*RADIAN_TO_DEGREE;
 
     glEnableClientState(GL_COLOR_ARRAY);
     glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
 
     glPushMatrix(); // tranformation for boids
-    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
-    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
+    glTranslatef(some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
+    glRotatef(angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
     
     glPushMatrix(); // draw left wings
     glRotatef(-some_boid->wing_rotation, 0, 1, 0);
@@ -245,7 +242,7 @@ void draw_a_flock(List* a_flock){
     glColor3f(SHADES_COLOR[0], SHADES_COLOR[1], SHADES_COLOR[2]);
     
     glPushMatrix(); // transformation for shades
-    glTranslatef(some_boid->pos.x, some_boid->pos.y, SHADES_HEIGHT);
+    glTranslatef(some_boid->pos[0], some_boid->pos[1], 0);
     glRotatef(shades_angle, 0, 0, 1);
     
     glPushMatrix(); // draw left wings
@@ -263,13 +260,13 @@ void draw_a_flock(List* a_flock){
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
-  vec4 v_modifier = dynamic_cast<vec4>(all_zero(4));
+  vec4 v_modifier(0, 0, 0, 0);
   while (current!=NULL){
     v_modifier = a_goal->pos - get_current_pos((BOID*)(current->data));
     if (length(v_modifier) > MAX_ATTRACTION_INFLUENCE) {
-      v_modifier = normalize(v_modifier)*MAX_ATTRACTION_INFLUENCE;
+      v_modifier = normalise(v_modifier)*MAX_ATTRACTION_INFLUENCE;
     }
-    v_modifier = ATTRACTION_WEIGHT*v_modifier;
+    v_modifier = v_modifier*ATTRACTION_WEIGHT;
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
