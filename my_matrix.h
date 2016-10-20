@@ -148,7 +148,8 @@ mat4 multiply(const mat4& m_i, const mat4& m_ii);
 float dot(const vec& vec_i, const vec& vec_ii);
 float distance(const vec& vec_i, const vec& vec_ii);
 float length(const vec& vec_i);   // OK to give a vec2, vec3, vec4
-vec3 normalise(const vec& vec_i); // OK to give a vec4
+vec3 normalise(const vec3& vec_i);
+vec4 normalise(const vec4& vec_i);
 float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal); //returns angle in RADIAN
 void unpack(const vec& vec_i, GLfloat arr[]);
 
@@ -163,7 +164,7 @@ mat4 all_zero_mat4(mat4 m = mat4(0,0,0,0,
                             0,0,0,0));
 
 mat2 identity_mat2(mat2 m = mat2(1,0,
-                            0,1));
+                                 0,1));
 mat3 identity_mat3(mat3 m = mat3(1,0,0,
                             0,1,0,
                             0,0,1));

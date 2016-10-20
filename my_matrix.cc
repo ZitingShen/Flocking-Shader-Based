@@ -760,13 +760,22 @@ float length(const vec& vec_i){
 }
 
 vec3 normalise(const vec& vec_i){
-  assert(vec_i.get_height() == 1);
   vec3 new_vec3;
   float len = length(vec_i);
   new_vec3.data[0] = vec_i[0] / len;
   new_vec3.data[1] = vec_i[1] / len;
   new_vec3.data[2] = vec_i[2] / len;
   return new_vec3;
+}
+
+vec4 normalise(const vec4& vec_i){
+  vec4 new_vec4;
+  float len = length(vec_i);
+  new_vec4.data[0] = vec_i[0] / len;
+  new_vec4.data[1] = vec_i[1] / len;
+  new_vec4.data[2] = vec_i[2] / len;
+  new_vec4.data[3] = vec_i[3];
+  return new_vec4;
 }
 
 float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal){
