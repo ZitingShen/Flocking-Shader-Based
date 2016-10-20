@@ -8,8 +8,9 @@ CFLAGS=-g -Wall -std=c++11 -I/usr/local/Cellar/glfw3/3.2.1/include
 
 TARGET = my_matrix_test
 SRC = $(TARGET).cc
-LIB = my_matrix.o
-all: my_matrix_test
+
+LIB = gl_replacement.o my_matrix.o list.o boid.o view.o goal.o
+all: flocking
 
 my_matrix_test: $(SRC) $(LIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(SRC) $(LIB)
@@ -19,6 +20,18 @@ my_matrix_test: $(SRC) $(LIB)
 
 my_matrix.o: my_matrix.cc my_matrix.h
 	$(CC) $(CFLAGS) -c my_matrix.cc
+
+list.o: list.cc list.h
+	$(CC) $(CFLAGS) -c list.cc
+
+boid.o: boid.cc boid.h
+	$(CC) $(CFLAGS) -c boid.cc
+
+view.o: view.cc view.h
+	$(CC) $(CFLAGS) -c view.cc
+
+goal.o: goal.cc goal.h
+	$(CC) $(CFLAGS) -c goal.cc
 
 clean:
 	rm $(TARGET) $(LIB)

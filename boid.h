@@ -4,6 +4,7 @@
 #include "list.h"
 #include "goal.h"
 #include "common.h"
+#include "gl_replacement.h"
 #include <time.h>
 
 const vec4 SPAWN_POSITION_I(1000.0, 1000.0, 1500.0, 1);
@@ -22,7 +23,7 @@ const vec4 A_BOID[] =
             {vec4(0, 0, 0, 1), // position of the centroid
              vec4(0, BOID_SIZE*2, 0, 1), // position of the head
              vec4(-BOID_SIZE, -BOID_SIZE, 0, 1), // position of the left vertex
-             vec4((BOID_SIZE, -BOID_SIZE, 0)}; // position of the right vertex
+             vec4(BOID_SIZE, -BOID_SIZE, 0, 1)}; // position of the right vertex
 
 const vec3 A_BOID_COLORS[] = {
   vec3(1.0, 1.0, 1.0), 

@@ -2,6 +2,9 @@
 #define VIEW_H
 
 #include "common.h"
+#include "list.h"
+#include "goal.h"
+#include "boid.h"
 
 const GLfloat CLEAR_COLOR[3] = {0.182, 0.008, 0.235};				  
 const GLfloat A_SQUARE[][3]= 
