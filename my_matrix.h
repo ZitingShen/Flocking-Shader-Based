@@ -24,14 +24,7 @@
  * – transpose, inverse, trace, determinant
  */
 
-class vec;
-class vec2;
-class vec3;
-class vec4;
-class mat2;
-class mat3;
-class mat4;
-
+//TODO: orientedAngle: calculate an oriented angle between two vectors using a normal
 class vec{
   protected:
     int width;
