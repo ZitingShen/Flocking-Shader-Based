@@ -41,6 +41,7 @@ bool test_constructor(){
   return success;
 }
 
+/*
 bool test_operators(){
   bool success = true;
   float e[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
@@ -82,21 +83,24 @@ bool test_operators(){
 
   return success;
 }
-
+*/
 bool test_reduce_promote(){
   bool success = true;
-  float d[9] = {1,2,3,4,5,6,7,8,9};
+/*  float d[9] = {1,2,3,4,5,6,7,8,9};
   float e[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 
-  vec* first = new mat4(e);
-  vec* first_reduced = first->reduce();
+  mat4 first(e);
+  mat4 another = dynamic_cast<mat4>(first + first);
+  mat3 first_reduced = first.reduce();
   vec* first_reduced_promoted = first_reduced->promote(false);
   first_reduced_promoted = (*first_reduced_promoted) + (*first_reduced_promoted);
-
+*/
+  mat4 t = identity_mat4();
+  t.display();
   /*first->display();
   first_reduced->display();
   first_reduced_promoted->display();
-*/
+
 
   delete first;
   delete first_reduced;
@@ -106,23 +110,23 @@ bool test_reduce_promote(){
   first_reduced = first->reduce();
   first_reduced_promoted = first_reduced->promote(true);
   first_reduced_promoted = (*first_reduced_promoted) + (*first_reduced_promoted);
-/*
+
   first->display();
   first_reduced->display();
-  first_reduced_promoted->display();
-*/
+ first_reduced_promoted->display();
+
   delete first;
   delete first_reduced;
   delete first_reduced_promoted;
-
+*/
   return success;
 }
 
 int main(){
 	bool success = true;
-  success = success 
-            && test_constructor()
-            && test_operators()
+  success = success
+  //          && test_constructor()
+  //          && test_operators()
             && test_reduce_promote();
   printf(success?"Passed all test\n":"Some tests failed\n");
   return 0;
