@@ -207,8 +207,9 @@ float vec::trace() const{
   return result;
 }
 
-mat2 mat2::transpose(){
-  mat2 new_mat;
+void vec::transpose(){
+  assert(this->width == this->height);
+  vec new_mat = vec(this->width, this->height);
   float* m = this->data;
   float* n = new_mat.data;
   for (int i=0; i<this->width; i++){
@@ -216,37 +217,13 @@ mat2 mat2::transpose(){
       n[j*this->height+i] = m[i*this->width+j];
     }
   }
-  return new_mat;
+  memcpy(m, n, sizeof(float) * this->width * this->height);
 }
 
-mat3 mat3::transpose(){
-  mat3 new_mat;
-  float* m = this->data;
-  float* n = new_mat.data;
-  for (int i=0; i<this->width; i++){
-    for (int j=0; j<this->height; j++){
-      n[j*this->height+i] = m[i*this->width+j];
-    }
-  }
-  return new_mat;
-}
-
-mat4 mat4::transpose(){
-  mat4 new_mat;
-  float* m = this->data;
-  float* n = new_mat.data;
-  for (int i=0; i<this->width; i++){
-    for (int j=0; j<this->height; j++){
-      n[j*this->height+i] = m[i*this->width+j];
-    }
-  }
-  return new_mat;
-}
-
-mat2 mat2::inverse(){
+void mat2::inverse(){
   if (this->determinant() == 0){
     std::cerr << "INVERSE: BAD MATRIX\n";
-    return (*this);
+    return;
   }
   mat2 new_mat;
   float* m = new_mat.data;
@@ -255,13 +232,14 @@ mat2 mat2::inverse(){
 
   m[0] = coeff * n[3];  m[1] = coeff * -n[1];
   m[2] = coeff * -n[2]; m[3] = coeff * n[0];
-  return new_mat;
+
+  memcpy(n, m, sizeof(float) * this->width * this->height);
 }
 
-mat3 mat3::inverse(){
+void mat3::inverse(){
   if (this->determinant() == 0){
     std::cerr << "INVERSE: BAD MATRIX\n";
-    return (*this);
+    return;
   }
   mat3 new_mat;
   float* m = new_mat.data;
@@ -271,20 +249,20 @@ mat3 mat3::inverse(){
   m[0] = coeff * mat2(n[4],n[5],n[7],n[8]).determinant();
   m[1] = coeff * mat2(n[2],n[1],n[8],n[7]).determinant();
   m[2] = coeff * mat2(n[1],n[2],n[4],n[5]).determinant();
-  m[3] = coeff * mat2(n[5],n[4],n[8],n[6]).determinant();
-  m[4] = coeff * mat2(n[0],n[2],n[4],n[5]).determinant();
-  m[5] = coeff * mat2(n[2],n[0],n[5],n[4]).determinant();
+  m[3] = coeff * mat2(n[5],n[3],n[8],n[6]).determinant();
+  m[4] = coeff * mat2(n[0],n[2],n[6],n[8]).determinant();
+  m[5] = coeff * mat2(n[2],n[0],n[5],n[3]).determinant();
   m[6] = coeff * mat2(n[3],n[4],n[6],n[7]).determinant();
   m[7] = coeff * mat2(n[1],n[0],n[7],n[6]).determinant();
   m[8] = coeff * mat2(n[0],n[1],n[3],n[4]).determinant();
 
-  return new_mat;
+  memcpy(n, m, sizeof(float) * this->width * this->height);
 }
 
-mat4 mat4::inverse(){
+void mat4::inverse(){
   if (this->determinant() == 0){
     std::cerr << "INVERSE: BAD MATRIX\n";
-    return (*this);
+    return;
   }
   mat4 new_mat;
   float* m = new_mat.data;
@@ -408,10 +386,10 @@ mat4 mat4::inverse(){
     m[i] = m[i] * coeff;
   }
 
-  return new_mat;
+  memcpy(n, m, sizeof(float) * this->width * this->height);
 }
 
-vec2 vec2::operator+ (const vec2& other){
+vec2 vec2::operator+ (const vec2& other) const{
 	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
@@ -423,7 +401,7 @@ vec2 vec2::operator+ (const vec2& other){
 	return new_vec;
 }
 
-vec2 vec2::operator- (const vec2& other){
+vec2 vec2::operator- (const vec2& other) const{
 	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
@@ -435,7 +413,7 @@ vec2 vec2::operator- (const vec2& other){
 	return new_vec;
 }
 
-vec3 vec3::operator+ (const vec3& other){
+vec3 vec3::operator+ (const vec3& other) const{
   vec3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -447,7 +425,7 @@ vec3 vec3::operator+ (const vec3& other){
   return new_vec;
 }
 
-vec3 vec3::operator- (const vec3& other){
+vec3 vec3::operator- (const vec3& other) const{
   vec3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -459,7 +437,7 @@ vec3 vec3::operator- (const vec3& other){
   return new_vec;
 }
 
-vec4 vec4::operator+ (const vec4& other){
+vec4 vec4::operator+ (const vec4& other) const{
   vec4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -471,7 +449,7 @@ vec4 vec4::operator+ (const vec4& other){
   return new_vec;
 }
 
-vec4 vec4::operator- (const vec4& other){
+vec4 vec4::operator- (const vec4& other) const{
   vec4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -483,7 +461,7 @@ vec4 vec4::operator- (const vec4& other){
   return new_vec;
 }
 
-mat2 mat2::operator+ (const mat2& other){
+mat2 mat2::operator+ (const mat2& other) const{
   mat2 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -495,7 +473,7 @@ mat2 mat2::operator+ (const mat2& other){
   return new_vec;
 }
 
-mat2 mat2::operator- (const mat2& other){
+mat2 mat2::operator- (const mat2& other) const{
   mat2 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -507,7 +485,7 @@ mat2 mat2::operator- (const mat2& other){
   return new_vec;
 }
 
-mat3 mat3::operator+ (const mat3& other){
+mat3 mat3::operator+ (const mat3& other) const{
   mat3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -519,7 +497,7 @@ mat3 mat3::operator+ (const mat3& other){
   return new_vec;
 }
 
-mat3 mat3::operator- (const mat3& other){
+mat3 mat3::operator- (const mat3& other) const{
   mat3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -531,7 +509,7 @@ mat3 mat3::operator- (const mat3& other){
   return new_vec;
 }
 
-mat4 mat4::operator+ (const mat4& other){
+mat4 mat4::operator+ (const mat4& other) const{
   mat4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -543,7 +521,7 @@ mat4 mat4::operator+ (const mat4& other){
   return new_vec;
 }
 
-mat4 mat4::operator- (const mat4& other){
+mat4 mat4::operator- (const mat4& other) const{
   mat4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -568,61 +546,49 @@ bool vec::operator== (const vec& other) const{
 	return same;
 }
 
-void vec::operator= (const vec& other){
-  int index = 0;
-  if (!(this->width == other.width && this->height == other.height)){
-    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
-    for (int i=0; i<this->height; i++){
-      for (int j=0; j<this->width; j++){
-        index = i*this->width + j;
-        this->data[index] = 0;
-      }
+vec& vec::operator= (const vec& other){
+  if (this != &other){ // check for self-assignment
+    if (!(this->width == other.width && this->height == other.height)){
+      std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+      return *this;
     }
-   }
-  for (int i=0; i<this->height; i++){
-    for (int j=0; j<this->width; j++){
-      index = i*this->width + j;
-      this->data[index] = other.data[index];
-    }
+    memcpy(this->data, other.data, sizeof(float) * this->height * this->width);
   }
+  return *this;
 }
 
-void vec::operator+= (const vec& other){
+vec& vec::operator+= (const vec& other){
   int index = 0;
-  if (!(this->width == other.width && this->height == other.height)){
-    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+  if (this != &other){
+    if (!(this->width == other.width && this->height == other.height)){
+      std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+      return *this;
+    }
     for (int i=0; i<this->height; i++){
       for (int j=0; j<this->width; j++){
         index = i*this->width + j;
-        this->data[index] = 0;
+        this->data[index] = this->data[index] + other.data[index];
       }
     }
-   }
-  for (int i=0; i<this->height; i++){
-    for (int j=0; j<this->width; j++){
-      index = i*this->width + j;
-      this->data[index] = this->data[index] + other.data[index];
-    }
   }
+  return *this;
 }
 
-void vec::operator-= (const vec& other){
+vec& vec::operator-= (const vec& other){
   int index = 0;
-  if (!(this->width == other.width && this->height == other.height)){
-    std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+  if (this != &other){
+    if (!(this->width == other.width && this->height == other.height)){
+      std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+      return *this;
+    }
     for (int i=0; i<this->height; i++){
       for (int j=0; j<this->width; j++){
         index = i*this->width + j;
-        this->data[index] = 0;
+        this->data[index] = this->data[index] - other.data[index];
       }
     }
-   }
-  for (int i=0; i<this->height; i++){
-    for (int j=0; j<this->width; j++){
-      index = i*this->width + j;
-      this->data[index] = this->data[index] - other.data[index];
-    }
   }
+  return *this;
 }
 
 void vec::operator++ (){
@@ -635,7 +601,7 @@ void vec::operator++ (){
   }
 }
 
-vec2 vec2::operator* (const float& scalar) {
+vec2 vec2::operator* (const float& scalar) const{
 	vec2 new_vec;
 	int index = 0;
 	for (int i = 0; i < this->height; i++) {
@@ -647,7 +613,7 @@ vec2 vec2::operator* (const float& scalar) {
 	return new_vec;
 }
 
-vec3 vec3::operator* (const float& scalar) {
+vec3 vec3::operator* (const float& scalar) const{
   vec3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -659,7 +625,7 @@ vec3 vec3::operator* (const float& scalar) {
   return new_vec;
 }
 
-vec4 vec4::operator* (const float& scalar) {
+vec4 vec4::operator* (const float& scalar) const{
   vec4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -671,7 +637,7 @@ vec4 vec4::operator* (const float& scalar) {
   return new_vec;
 }
 
-mat2 mat2::operator* (const float& scalar) {
+mat2 mat2::operator* (const float& scalar) const{
   mat2 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -683,7 +649,7 @@ mat2 mat2::operator* (const float& scalar) {
   return new_vec;
 }
 
-mat3 mat3::operator* (const float& scalar) {
+mat3 mat3::operator* (const float& scalar) const{
   mat3 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -695,7 +661,7 @@ mat3 mat3::operator* (const float& scalar) {
   return new_vec;
 }
 
-mat4 mat4::operator* (const float& scalar) {
+mat4 mat4::operator* (const float& scalar) const{
   mat4 new_vec;
   int index = 0;
   for (int i = 0; i < this->height; i++) {
@@ -846,9 +812,9 @@ mat4 identity_mat4(mat4 m){
 }
 
 mat4 multiply(const mat4& m_i, const mat4& m_ii){
-  int sum = 0;
+  float sum = 0;
   int dimension = m_i.get_height();
-  mat4 new_mat = mat4(m_i.get_width(), m_ii.get_height());
+  mat4 new_mat;
   for (int i = 0; i<dimension; i++){
     for (int j = 0; j<dimension; j++){
       sum = 0;

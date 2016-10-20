@@ -24,7 +24,14 @@
  * – transpose, inverse, trace, determinant
  */
 
-//TODO: orientedAngle: calculate an oriented angle between two vectors using a normal
+class vec;
+class vec2;
+class vec3;
+class vec4;
+class mat2;
+class mat3;
+class mat4;
+
 class vec{
   protected:
     int width;
@@ -42,10 +49,11 @@ class vec{
     float determinant() const;
     float trace() const;
     bool operator== (const vec& other) const;
-    void operator= (const vec& other); // cant use for chain assignment; but can be used by child class
-    void operator+= (const vec& other);
-    void operator-= (const vec& other);
+    vec& operator= (const vec& other);
+    vec& operator+= (const vec& other);
+    vec& operator-= (const vec& other);
     void operator++ (); // for doubling all values
+    void transpose();
     float& operator[] (const int index); // mutator
     const float& operator[] (const int index) const; // accessor
     void display() const; // column-major display
@@ -57,9 +65,9 @@ public vec{
   vec2();
   vec2(float* data);
   vec2(float a, float b);
-  vec2 operator+  (const vec2& other);
-  vec2 operator-  (const vec2& other);
-  vec2 operator*  (const float& scalar);
+  vec2 operator+  (const vec2& other) const;
+  vec2 operator-  (const vec2& other) const;
+  vec2 operator*  (const float& scalar) const;
 };
 
 class vec3:
@@ -69,9 +77,9 @@ public vec{
   vec3();
   vec3(float* data);
   vec3(float a, float b, float c);
-  vec3 operator+  (const vec3& other);
-  vec3 operator-  (const vec3& other);
-  vec3 operator*  (const float& scalar);
+  vec3 operator+  (const vec3& other) const;
+  vec3 operator-  (const vec3& other) const;
+  vec3 operator*  (const float& scalar) const;
   vec4 promote(bool append_one);
 };
 
@@ -82,9 +90,9 @@ public vec{
   vec4();
   vec4(float* data);
   vec4(float a, float b, float c, float d);
-  vec4 operator+  (const vec4& other);
-  vec4 operator-  (const vec4& other);
-  vec4 operator*  (const float& scalar);
+  vec4 operator+  (const vec4& other) const;
+  vec4 operator-  (const vec4& other) const;
+  vec4 operator*  (const float& scalar) const;
   vec3 reduce();
 };
 
@@ -95,11 +103,10 @@ public vec{
   mat2();
   mat2(float* data);
   mat2(float a, float b, float c, float d);
-  mat2 operator+  (const mat2& other);
-  mat2 operator-  (const mat2& other);
-  mat2 operator*  (const float& scalar);
-  mat2 transpose();
-  mat2 inverse();
+  mat2 operator+  (const mat2& other) const;
+  mat2 operator-  (const mat2& other) const;
+  mat2 operator*  (const float& scalar) const;
+  void inverse();
 };
 
 class mat3:
@@ -111,11 +118,10 @@ public vec{
   mat3(float a1, float a2, float a3,
        float b1, float b2, float b3,
        float c1, float c2, float c3);
-  mat3 operator+  (const mat3& other);
-  mat3 operator-  (const mat3& other);
-  mat3 operator*  (const float& scalar);
-  mat3 transpose();
-  mat3 inverse();
+  mat3 operator+  (const mat3& other) const;
+  mat3 operator-  (const mat3& other) const;
+  mat3 operator*  (const float& scalar) const;
+  void inverse();
   mat4 promote(bool append_one);
 };
 
@@ -129,11 +135,10 @@ public vec{
        float b1, float b2, float b3, float b4,
        float c1, float c2, float c3, float c4,
        float d1, float d2, float d3, float d4);
-  mat4 operator+  (const mat4& other);
-  mat4 operator-  (const mat4& other);
-  mat4 operator*  (const float& scalar);
-  mat4 transpose();
-  mat4 inverse();
+  mat4 operator+  (const mat4& other) const;
+  mat4 operator-  (const mat4& other) const;
+  mat4 operator*  (const float& scalar) const;
+  void inverse();
   mat3 reduce();
 };
 

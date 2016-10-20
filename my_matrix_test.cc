@@ -95,8 +95,8 @@ bool test_reduce_promote(){
   vec* first_reduced_promoted = first_reduced->promote(false);
   first_reduced_promoted = (*first_reduced_promoted) + (*first_reduced_promoted);
 */
-  mat4 t = identity_mat4();
-  t.display();
+  //mat4 t = identity_mat4();
+  //t.display();
   /*first->display();
   first_reduced->display();
   first_reduced_promoted->display();
@@ -122,8 +122,58 @@ bool test_reduce_promote(){
   return success;
 }
 
+void test_methods(){
+  float a[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+  float b[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,117};
+  float c[16] = {12,32,45,21,4,65,35,27,56,78,69,12,45,65,76,1};    
+
+  float d[9] = {1,2,3,4,5,6,7,8,9};
+  float e[9] = {12,32,45,21,4,65,35,27,56};        
+
+  mat4 m1(a);
+  mat4 m2(b);
+  mat4 m3(c);
+  mat3 m4(d);
+  mat3 m5(e);
+  m2 = m1;
+  cout << m1.determinant() << " " << m1.trace() << endl;
+  cout << m2.determinant() << " " << m2.trace() << endl;
+  cout << m3.determinant() << " " << m3.trace() << endl;
+  cout << m4.determinant() << " " << m4.trace() << endl;
+  cout << m5.determinant() << " " << m5.trace() << endl;
+
+  m2.display();
+  m3.display();
+  mat4 m_m = multiply(m2, m3);
+  m_m.display();
+
+  m5.display();
+  m5.transpose();
+  m5.display();
+  m5.inverse();
+  m5.display();
+  
+  m3.display();
+  m3.transpose();
+  m3.display();
+  m3.inverse();
+  m3.display();
+
+  vec3 v_3_i(1,2,3);
+  vec3 v_3_ii(6,7,8);
+  float v_dot = dot(v_3_i, v_3_ii);
+  vec3 v_cross = cross(v_3_i, v_3_ii);
+
+  cout << v_dot << endl;
+  v_cross.display();
+
+
+
+}
+
 int main(){
 	bool success = true;
+  test_methods();
   success = success
   //          && test_constructor()
   //          && test_operators()
