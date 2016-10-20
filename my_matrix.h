@@ -24,6 +24,7 @@
  * – transpose, inverse, trace, determinant
  */
 
+//TODO: orientedAngle: calculate an oriented angle between two vectors using a normal
 class vec{
   protected:
     int width;
