@@ -801,11 +801,11 @@ float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal){
 
 void unpack(const vec& vec_i, GLfloat arr[]){
   int index = 0;
-  int count = 0;
-  for (int i = 0; i < vec_i.get_height(); i++) {
-    for (int j = 0; j < vec_i.get_width(); j++) {
-      index = i*vec_i.get_width() + j;
-      arr[count] = vec_i.data[index];
+  int dimension = vec_i.get_height();
+  for (int i = 0; i < dimension; i++) {
+    for (int j = 0; j < dimension; j++) {
+      arr[index] = vec_i.data[index];
+      index++;
     }
   }
 }
@@ -846,7 +846,7 @@ mat4 multiply(const mat4& m_i, const mat4& m_ii){
     for (int j = 0; j<dimension; j++){
       sum = 0;
       for (int k = 0; k < dimension; k++){
-        sum += m_i.data[i*m_i.get_width() + k] * m_ii.data[k*m_ii.get_width() + j];
+        sum += m_i.data[i*dimension + k] * m_ii.data[k*dimension + j];
       }
       new_mat[i*dimension + j] = sum;
     }

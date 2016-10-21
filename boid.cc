@@ -228,14 +228,14 @@ void draw_a_flock(List* a_flock){
 
     glPushMatrix(); // tranformation for boids
     glTranslatef(some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
-    glRotatef(angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
+    //glRotatef(angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
     
     glPushMatrix(); // draw left wings
-    glRotatef(-some_boid->wing_rotation, 0, 1, 0);
+    //glRotatef(-some_boid->wing_rotation, 0, 1, 0);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
     glPopMatrix();
     
-    glRotatef(some_boid->wing_rotation, 0, 1, 0); // draw right wings
+    //glRotatef(some_boid->wing_rotation, 0, 1, 0); // draw right wings
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);  
     glPopMatrix();
 
@@ -244,7 +244,7 @@ void draw_a_flock(List* a_flock){
     
     glPushMatrix(); // transformation for shades
     glTranslatef(some_boid->pos[0], some_boid->pos[1], 0);
-    glRotatef(shades_angle, 0, 0, 1);
+    //glRotatef(shades_angle, 0, 0, 1);
     
     glPushMatrix(); // draw left wings
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);

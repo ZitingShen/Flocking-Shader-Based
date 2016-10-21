@@ -9,7 +9,7 @@
 //#include "obstacle.h"
 #include "common.h"
 
-void init();
+void init(GLFWwindow* window);
 void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);

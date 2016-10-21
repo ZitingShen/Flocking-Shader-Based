@@ -1,8 +1,7 @@
 #include "view.h"
 #include "gl_replacement.h"
 
-void change_view(viewMode viewmode, int width, int height, List *flock, 
-                GOAL *goal) {
+void change_view(viewMode viewmode, List *flock, GOAL *goal) {
   vec4 center = flock_centroid(flock);
   vec4 midpoint = mid_point(flock, goal);
   float max_distance =  flock_radius(flock);
@@ -15,10 +14,6 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
   GLfloat up[3];
   switch(viewmode) {
     case DEFAULT:
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
-    myPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //gluLookAt(0, 2, TOWER_HEIGHT, midpoint[0], midpoint[1], midpoint[2], 0, 0, 1);
@@ -35,10 +30,6 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     break;
 
     case TRAILING:
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //gluPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
-    myPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -60,10 +51,6 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     break;
 
     case SIDE: {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    //gluPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
-    myPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 

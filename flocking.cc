@@ -28,7 +28,7 @@ int main(){
   glfwSetKeyCallback(window, keyboard);
   glfwSetFramebufferSizeCallback(window, framebuffer_resize);
 
-  init();
+  init(window);
 
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_SMOOTH);
@@ -38,8 +38,7 @@ int main(){
     glfwPollEvents();
 
     if(!IS_PAUSED || PAUSE_TIME > 0) {
-      glfwGetWindowSize(window, &WIDTH, &HEIGHT);
-      change_view(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, A_GOAL);
+      change_view(VIEW_MODE, A_FLOCK, A_GOAL);
       update_goal_velocity(A_GOAL);
       update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK);
@@ -67,7 +66,7 @@ int main(){
   exit(EXIT_SUCCESS);
 }
 
-void init() {
+void init(GLFWwindow* window) {
   glClearColor(CLEAR_COLOR[0], CLEAR_COLOR[1], CLEAR_COLOR[2], 1.0);
   glColor3f(0.0, 0.0, 0.0);
   A_FLOCK = list_new();
@@ -76,6 +75,12 @@ void init() {
   srand(time(NULL));
   init_a_flock(A_FLOCK);
   init_background(SQUARES_POS);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+  myPerspective(45, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
+  glMatrixMode(GL_MODELVIEW);
 }
 
 void framebuffer_resize(GLFWwindow* window, int width, int height) {
@@ -83,7 +88,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  change_view(VIEW_MODE, w, h, A_FLOCK, A_GOAL);
+  change_view(VIEW_MODE, A_FLOCK, A_GOAL);
 }
 
 void cleanup(){
@@ -92,7 +97,7 @@ void cleanup(){
   list_destroy(A_FLOCK);
 }
 
-void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
+void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS) {
     switch(key) {
       case GLFW_KEY_EQUAL:
@@ -115,14 +120,29 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
 
       case GLFW_KEY_V:
       VIEW_MODE  = DEFAULT;
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+      myPerspective(45, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
+      glMatrixMode(GL_MODELVIEW);
       break;
 
       case GLFW_KEY_T:
       VIEW_MODE = TRAILING;
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+      myPerspective(30, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
+      glMatrixMode(GL_MODELVIEW);
       break;
 
       case GLFW_KEY_G:
       VIEW_MODE = SIDE;
+      glMatrixMode(GL_PROJECTION);
+      glLoadIdentity();
+      glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+      myPerspective(40, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
+      glMatrixMode(GL_MODELVIEW);
       break;
 
       case GLFW_KEY_A:
@@ -155,7 +175,7 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
 
       case GLFW_KEY_Q:
       case GLFW_KEY_ESCAPE:
-      glfwSetWindowShouldClose(w, GLFW_TRUE);
+      glfwSetWindowShouldClose(window, GLFW_TRUE);
       break;
       default:
       break;
