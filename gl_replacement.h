@@ -2,6 +2,7 @@
 #define GL_REPLACEMENT_H
 
 #include "common.h"
+#include "my_matrix.h"
 
 void myLookAt(GLfloat eye[3], GLfloat center[3], GLfloat up[3]);
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar);

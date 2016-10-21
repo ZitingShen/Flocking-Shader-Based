@@ -46,12 +46,12 @@ void update_goal_velocity(GOAL* a_goal){
   }
 
   if (a_goal->ACCELERATE){
-    a_goal->velocity = float(1 + DEFAULT_ACCELERATION_FACTOR) * a_goal->velocity;
+    a_goal->velocity = a_goal->velocity*float(1 + DEFAULT_ACCELERATION_FACTOR);
     a_goal->velocity[2] = 0.01; // do not accerlate on Z
   }
 
   if (a_goal->DECELERATE){
-    a_goal->velocity = float(1 - DEFAULT_ACCELERATION_FACTOR) * a_goal->velocity;
+    a_goal->velocity =  a_goal->velocity*float(1 - DEFAULT_ACCELERATION_FACTOR);
     a_goal->velocity[2] = 0.01; // do not accerlate on Z
   }
 }
@@ -66,7 +66,7 @@ void draw_a_goal(GOAL* a_goal){
   glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTICES);
   glColorPointer(3, GL_FLOAT, 0, CUBE_COLORS);
   glPushMatrix();
-  glTranslatef(a_goal->pos.x, a_goal->pos.y, a_goal->pos.z);
+  glTranslatef(a_goal->pos[0], a_goal->pos[1], a_goal->pos[2]);
   glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
   glPopMatrix();
   glDisableClientState(GL_COLOR_ARRAY);

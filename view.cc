@@ -68,7 +68,7 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    vec3 v3(flock_direction);
+    vec3 v3 = flock_direction.reduce();
     vec3 side_v3 = cross(v3, vec3(0, 0, 1));
     vec4 side_v = vec4(side_v3[0], side_v3[1], side_v3[2], 0.0);
     camera_pos = midpoint

@@ -73,7 +73,6 @@ public vec{
 class vec3:
 public vec{
   public:
-  using vec::vec;
   vec3();
   vec3(float* data);
   vec3(float a, float b, float c);
@@ -86,7 +85,6 @@ public vec{
 class vec4:
 public vec{
   public:
-  using vec::vec;
   vec4();
   vec4(float* data);
   vec4(float a, float b, float c, float d);
@@ -99,7 +97,6 @@ public vec{
 class mat2:
 public vec{
   public:
-  using vec::vec;
   mat2();
   mat2(float* data);
   mat2(float a, float b, float c, float d);
@@ -112,7 +109,6 @@ public vec{
 class mat3:
 public vec{
   public:
-  using vec::vec;
   mat3();
   mat3(float* data);
   mat3(float a1, float a2, float a3,
@@ -128,7 +124,6 @@ public vec{
 class mat4:
 public vec{
   public:
-  using vec::vec;
   mat4();
   mat4(float* data);
   mat4(float a1, float a2, float a3, float a4,

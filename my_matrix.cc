@@ -549,7 +549,8 @@ bool vec::operator== (const vec& other) const{
 vec& vec::operator= (const vec& other){
   if (this != &other){ // check for self-assignment
     if (!(this->width == other.width && this->height == other.height)){
-      std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+      std::cerr << this->width << " " << other.width << std::endl;
+      std::cerr << "OPERATOR=: BAD ASSIGNMENT\n";
       return *this;
     }
     memcpy(this->data, other.data, sizeof(float) * this->height * this->width);
@@ -578,7 +579,7 @@ vec& vec::operator-= (const vec& other){
   int index = 0;
   if (this != &other){
     if (!(this->width == other.width && this->height == other.height)){
-      std::cerr << "OPERATOR+=: BAD ASSIGNMENT\n";
+      std::cerr << "OPERATOR-=: BAD ASSIGNMENT\n";
       return *this;
     }
     for (int i=0; i<this->height; i++){
@@ -759,7 +760,7 @@ float length(const vec& vec_i){
   return sqrt(result);
 }
 
-vec3 normalise(const vec& vec_i){
+vec3 normalise(const vec3& vec_i){
   vec3 new_vec3;
   float len = length(vec_i);
   new_vec3.data[0] = vec_i[0] / len;
