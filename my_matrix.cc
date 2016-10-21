@@ -812,33 +812,27 @@ void unpack(const vec& vec_i, GLfloat arr[]){
 
 //generate identity or zeor matrix with specified dimension
 mat2 all_zero_mat2(mat2 m){
-  mat2 result = m;
-  return result;
+  return m;
 }
 
 mat3 all_zero_mat3(mat3 m){
-  mat3 result = m;
-  return result;
+  return m;
 }
 
 mat4 all_zero_mat4(mat4 m){
-  mat4 result = m;
-  return result;
+  return m;
 }
 
 mat2 identity_mat2(mat2 m){
-  mat2 result = m;
-  return result;
+  return m;
 }
 
 mat3 identity_mat3(mat3 m){
-  mat3 result = m;
-  return result;
+  return m;
 }
 
 mat4 identity_mat4(mat4 m){
-  mat4 result = m;
-  return result;
+  return m;
 }
 
 mat4 multiply(const mat4& m_i, const mat4& m_ii){
