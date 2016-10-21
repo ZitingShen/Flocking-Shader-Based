@@ -548,14 +548,18 @@ bool vec::operator== (const vec& other) const{
 
 vec& vec::operator= (const vec& other){
   if (this != &other){ // check for self-assignment
-    if (!(this->width == other.width && this->height == other.height)){
+    if (this->data == NULL){
+      this->data = new float[this->height * this->width];
+    }else if (!(this->width == other.width && this->height == other.height)){
       std::cerr << this->width << " " << other.width << std::endl;
       std::cerr << "OPERATOR=: BAD ASSIGNMENT OR POINTER INITIATION\n";
       //return *this;
     }
+
+
+
+
     memcpy(this->data, other.data, sizeof(float) * this->height * this->width);
-    this->height = other.height;
-    this->width  = other.width;
   }
   return *this;
 }

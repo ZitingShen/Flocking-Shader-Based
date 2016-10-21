@@ -4,8 +4,8 @@ using namespace std;
 
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  new (&(a_boid->pos)) vec4();
-  new (&(a_boid->velocity)) vec4();
+  a_boid->pos = vec4();
+  a_boid->velocity = vec4();
   a_boid->velocity = SPAWN_VELOCITY;
   a_boid->partner_radius = PARTNER_RADIUS;
   a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION)
@@ -19,8 +19,8 @@ BOID* new_boid(){
 
 BOID* new_boid(vec4 velocity, float radius, vec4 pos){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  new (&(a_boid->pos)) vec4();
-  new (&(a_boid->velocity)) vec4();
+  a_boid->pos vec4();
+  a_boid->velocity vec4();
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
