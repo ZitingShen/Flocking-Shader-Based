@@ -4,6 +4,8 @@ using namespace std;
 
 GOAL* new_goal(){
 	GOAL* a_goal = new GOAL;
+  a_goal->pos.reset();
+  a_goal->velocity.reset();
 	a_goal->pos = DEFAULT_GOAL_SPAWN_POSITION;
   a_goal->velocity = DEFAULT_GOAL_SPAWN_VELOCITY;
   a_goal->MOVE_ALONG_X_NEGATIVE = false;
