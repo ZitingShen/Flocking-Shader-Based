@@ -159,14 +159,10 @@ mat4 all_zero_mat4(mat4 m = mat4(0,0,0,0,
                             0,0,0,0,
                             0,0,0,0));
 
-mat2 identity_mat2(mat2 m = mat2(1,0,
-                                 0,1));
+mat2 identity_mat2(mat2 m = mat2(0,1,1,0));
 mat3 identity_mat3(mat3 m = mat3(1,0,0,
                             0,1,0,
                             0,0,1));
-mat4 identity_mat4(mat4 m = mat4(1,0,0,0,
-                            0,1,0,0,
-                            0,0,1,0,
-                            0,0,0,1));
+void identity_mat4(mat4& m);
 
 #endif
