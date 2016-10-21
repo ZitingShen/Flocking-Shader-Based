@@ -91,7 +91,6 @@ public vec{
   vec4 operator+  (const vec4& other) const;
   vec4 operator-  (const vec4& other) const;
   vec4 operator*  (const float& scalar) const;
-  vec3 reduce();
   void reset();
 };
 
@@ -135,9 +134,10 @@ public vec{
   mat4 operator-  (const mat4& other) const;
   mat4 operator*  (const float& scalar) const;
   void inverse();
-  mat3 reduce();
 };
 
+vec3 reduce(const vec4& v);
+mat3 reduce(const mat4& m);
 vec3 cross(const vec3& vec_i, const vec3& vec_ii);
 mat4 multiply(const mat4& m_i, const mat4& m_ii);
 

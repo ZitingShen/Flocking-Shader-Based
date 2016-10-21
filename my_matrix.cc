@@ -720,13 +720,13 @@ mat4 mat3::promote(bool append_one){
               0,0,0, append_one?1:0);
 }
 
-vec3 vec4::reduce(){
-  float* m = this->data;
+vec3 reduce(const vec4& v){
+  float* m = v.data;
   return vec3(m[0], m[1], m[2]);
 }
 
-mat3 mat4::reduce(){
-  float* m = this->data;
+mat3 reduce(const mat4& mat){
+  float* m = mat.data;
   return mat3(m[0], m[4], m[8],
               m[1], m[5], m[9],
               m[2], m[6], m[10]);

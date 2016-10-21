@@ -215,8 +215,8 @@ void draw_a_flock(List* a_flock){
   for (int i = 0; i < a_flock->length; i++){
 
     some_boid = (BOID*)(current->data);
-    vec3 velocity3 = normalise(some_boid->velocity.reduce());
-    vec3 initial3 = normalise(((vec4) SPAWN_VELOCITY).reduce());
+    vec3 velocity3 = normalise(reduce(some_boid->velocity));
+    vec3 initial3 = normalise(reduce(SPAWN_VELOCITY));
     vec3 rotate_normal = normalise(cross(velocity3, initial3));
     float angle = oriented_angle(initial3, velocity3, 
                                 rotate_normal)*RADIAN_TO_DEGREE;
