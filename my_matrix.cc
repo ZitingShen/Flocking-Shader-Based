@@ -171,7 +171,9 @@ mat4::mat4(float a1, float a2, float a3, float a4,
 }
 
 vec::~vec(){
-  delete [] data;
+  if (this->data != NULL){
+    delete [] data;
+  }
 }
 
 int vec::get_height() const{
@@ -810,27 +812,33 @@ void unpack(const vec& vec_i, GLfloat arr[]){
 
 //generate identity or zeor matrix with specified dimension
 mat2 all_zero_mat2(mat2 m){
-  return m;
+  mat2 result = m;
+  return result;
 }
 
 mat3 all_zero_mat3(mat3 m){
-  return m;
+  mat3 result = m;
+  return result;
 }
 
 mat4 all_zero_mat4(mat4 m){
-  return m;
+  mat4 result = m;
+  return result;
 }
 
 mat2 identity_mat2(mat2 m){
-  return m;
+  mat2 result = m;
+  return result;
 }
 
 mat3 identity_mat3(mat3 m){
-  return m;
+  mat3 result = m;
+  return result;
 }
 
 mat4 identity_mat4(mat4 m){
-  return m;
+  mat4 result = m;
+  return result;
 }
 
 mat4 multiply(const mat4& m_i, const mat4& m_ii){

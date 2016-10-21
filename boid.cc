@@ -113,6 +113,7 @@ void update_wing_rotation(List* a_flock){
 }
 
 vec4 get_current_pos(BOID* a_boid){
+  //vec4 pos = a_boid->pos;
   return a_boid->pos; //order matters
 }
 
