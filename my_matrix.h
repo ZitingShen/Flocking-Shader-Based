@@ -92,6 +92,7 @@ public vec{
   vec4 operator-  (const vec4& other) const;
   vec4 operator*  (const float& scalar) const;
   vec3 reduce();
+  void reset();
 };
 
 class mat2:

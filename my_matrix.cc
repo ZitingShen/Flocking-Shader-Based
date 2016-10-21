@@ -66,6 +66,12 @@ vec4::vec4(){
   this->height = 1;
 }
 
+void vec4::reset(){
+  this->data = new float[4];
+  this->width = 4;
+  this->height = 1;
+}
+
 vec4::vec4(float* data){
   this->data = new float[4];
   this->width = 4;
@@ -551,11 +557,9 @@ vec& vec::operator= (const vec& other){
     if (!(this->width == other.width && this->height == other.height)){
       std::cerr << this->width << " " << other.width << std::endl;
       std::cerr << "OPERATOR=: BAD ASSIGNMENT OR POINTER INITIATION\n";
-      //return *this;
+      return *this;
     }
     memcpy(this->data, other.data, sizeof(float) * this->height * this->width);
-    this->height = other.height;
-    this->width  = other.width;
   }
   return *this;
 }
