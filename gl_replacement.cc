@@ -14,8 +14,10 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
               side_normal[2], up_normal[2], -forward_normal[2], 0,
               0,0,0,1};
 
-  myTranslate(trans_matrix, -eye[0], -eye[1], -eye[2]); //move to eye
   glLoadMatrixf(trans_matrix);
+  //glMultMatrixf(trans_matrix);
+  glTranslatef(-eye[0], -eye[1], -eye[2]);
+  //myTranslate(trans_matrix, -eye[0], -eye[1], -eye[2]); //move to eye
 }
 
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
@@ -30,17 +32,22 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
         0, 0, -(zFar+zNear)/(zFar-zNear), -1,
         0, 0, -2*(zFar*zNear)/(zFar-zNear),0};
 
-  glLoadMatrixf(trans_matrix);
+  glMultMatrixf(trans_matrix);
+  //glLoadMatrixf(trans_matrix);
 }
 
 void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   mat4 current(current_matrix);
   mat4 trans;
   identity_mat4(trans);
-  trans[3] = x;
-  trans[7] = y;
-  trans[11] = z;
+  trans[12] = x;
+  trans[13] = y;
+  trans[14] = z;
   unpack(multiply(current, trans), current_matrix);
+  for(int i = 0; i < 16; i++) {
+    printf("%.2f ", trans[i]);
+  }
+  printf("\n");
   glLoadMatrixf(current_matrix);
 }
 

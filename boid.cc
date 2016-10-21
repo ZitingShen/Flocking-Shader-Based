@@ -32,7 +32,7 @@ BOID* new_boid(vec4 velocity, float radius, vec4 pos){
 }
 
 bool is_partner(BOID* source, BOID* target){
-  return source->partner_radius >= distance(&(source->pos), &(target->pos));
+  return source->partner_radius >= distance(source->pos, target->pos);
 }
 
 void update_velocity(List* a_flock){
@@ -77,7 +77,7 @@ void update_velocity(List* a_flock){
       s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners);
       a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT;
       c_modifier = (c_modifier*(1/(float)num_of_partners) - source->pos)*COHESION_WEIGHT;
-      source->velocity = source->velocity + s_modifier + a_modifier + c_modifier;
+      source->velocity += s_modifier + a_modifier + c_modifier;
     }
     if (num_of_boids_other_flocks != 0) {
       f_modifier = f_modifier*(DETERRENCE_WEIGHT/(float)num_of_boids_other_flocks);
