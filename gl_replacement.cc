@@ -35,7 +35,8 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
 
 void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   mat4 current(current_matrix);
-  mat4 trans = identity_mat4();
+  mat4 trans;
+  identity_mat4(trans);
   trans[3] = x;
   trans[7] = y;
   trans[11] = z;
@@ -53,7 +54,8 @@ void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLf
   y = axis[1];
   z = axis[2];
   mat4 current(current_matrix);
-  mat4 trans = identity_mat4();
+  mat4 trans;
+  identity_mat4(trans);
   trans[0] = x*x*(1 - c) + c;
   trans[1] = x*y*(1 - c) - z*s;
   trans[2] = x*z*(1 - c) + y*s;
@@ -69,7 +71,8 @@ void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLf
 
 void myScale(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   mat4 current(current_matrix);
-  mat4 trans = identity_mat4();
+  mat4 trans;
+  identity_mat4(trans);
   trans[0] = x;
   trans[5] = y;
   trans[10] = z;

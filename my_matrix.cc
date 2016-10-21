@@ -831,8 +831,11 @@ mat3 identity_mat3(mat3 m){
   return m;
 }
 
-mat4 identity_mat4(mat4 m){
-  return m;
+
+void identity_mat4(mat4& m){
+  for (int i=0; i<16; i++){
+    m[i] = (i % 5 == 0)?1:0;
+  }
 }
 
 mat4 multiply(const mat4& m_i, const mat4& m_ii){
