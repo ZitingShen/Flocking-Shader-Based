@@ -123,13 +123,18 @@ bool test_reduce_promote(){
 }
 
 void test_methods(){
-  float a[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+  /*float a[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
   float b[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,117};
   float c[16] = {12,32,45,21,4,65,35,27,56,78,69,12,45,65,76,1};    
 
   float d[9] = {1,2,3,4,5,6,7,8,9};
   float e[9] = {12,32,45,21,4,65,35,27,56};        
-
+*/
+  mat4 m;
+  vec4 v;
+  cout << v.get_height() << " " << v.get_width() << endl;
+  cout << m.get_height() << " " << m.get_width() << endl;
+/*
   mat4 m1(a);
   mat4 m2(b);
   mat4 m3(c);
@@ -166,9 +171,7 @@ void test_methods(){
 
   cout << v_dot << endl;
   v_cross.display();
-
-
-
+*/
 }
 
 int main(){
