@@ -82,7 +82,7 @@ void remove_a_boid(List* a_flock);
 void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal);
-void draw_a_flock(List* a_flock);
+void draw_a_flock(List* a_flock, GLfloat mv_mat[]);
 
 void print_flock(List* a_flock);
 //void update_rotation(BOID* a_boid);

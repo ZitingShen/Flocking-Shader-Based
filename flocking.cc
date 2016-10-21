@@ -10,6 +10,11 @@ viewMode VIEW_MODE = DEFAULT;
 int WIDTH, HEIGHT;
 GLfloat SQUARES_POS[BG_SQUARE_NUM*BG_SQUARE_NUM][2];
 
+GLfloat MV_MAT[] = {1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1};
+
 int main(){
   GLFWwindow* window;
 
@@ -50,9 +55,9 @@ int main(){
       //}
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
-        draw_background(SQUARES_POS);
-        draw_a_flock(A_FLOCK);
-        draw_a_goal(A_GOAL);
+        draw_background(SQUARES_POS, MV_MAT);
+        draw_a_flock(A_FLOCK, MV_MAT);
+        draw_a_goal(A_GOAL, MV_MAT);
       }
       glfwSwapBuffers(window);
       if (IS_PAUSED && PAUSE_TIME > 0) {
@@ -67,6 +72,7 @@ int main(){
 }
 
 void init(GLFWwindow* window) {
+
   glClearColor(CLEAR_COLOR[0], CLEAR_COLOR[1], CLEAR_COLOR[2], 1.0);
   glColor3f(0.0, 0.0, 0.0);
   A_FLOCK = list_new();
@@ -77,7 +83,6 @@ void init(GLFWwindow* window) {
   init_background(SQUARES_POS);
 
   glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
   glfwGetWindowSize(window, &WIDTH, &HEIGHT);
   myPerspective(45, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
   glMatrixMode(GL_MODELVIEW);
@@ -121,7 +126,6 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
       case GLFW_KEY_V:
       VIEW_MODE  = DEFAULT;
       glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
       glfwGetWindowSize(window, &WIDTH, &HEIGHT);
       myPerspective(45, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
       glMatrixMode(GL_MODELVIEW);
@@ -130,7 +134,6 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
       case GLFW_KEY_T:
       VIEW_MODE = TRAILING;
       glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
       glfwGetWindowSize(window, &WIDTH, &HEIGHT);
       myPerspective(30, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
       glMatrixMode(GL_MODELVIEW);
@@ -139,7 +142,6 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
       case GLFW_KEY_G:
       VIEW_MODE = SIDE;
       glMatrixMode(GL_PROJECTION);
-      glLoadIdentity();
       glfwGetWindowSize(window, &WIDTH, &HEIGHT);
       myPerspective(40, WIDTH*1.0/HEIGHT, CAMERA_NEAR, CAMERA_FAR);
       glMatrixMode(GL_MODELVIEW);

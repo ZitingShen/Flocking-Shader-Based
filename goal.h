@@ -2,6 +2,7 @@
 #define GOAL_H
 
 #include "common.h"
+#include "gl_replacement.h"
 
 const vec4 DEFAULT_GOAL_SPAWN_VELOCITY(10, 10, 0.01, 0); // initiated with a positive speed on Z-axis
 const vec4 DEFAULT_GOAL_SPAWN_POSITION(0, 5000, 1000, 1);
@@ -38,6 +39,6 @@ typedef struct _goal{
 GOAL* new_goal();
 void update_goal_velocity(GOAL* a_goal);
 void update_goal_pos(GOAL* a_goal);
-void draw_a_goal(GOAL* a_goal);
+void draw_a_goal(GOAL* a_goal, GLfloat mv_mat[]);
 void print_goal(GOAL* a_goal);
 #endif

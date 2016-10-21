@@ -21,5 +21,5 @@ typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 void change_view(viewMode viewmode, List *flock, GOAL *goal);
 
 void init_background(GLfloat squares_pos[][2]);
-void draw_background(GLfloat squares_pos[][2]);
+void draw_background(GLfloat squares_pos[][2], GLfloat mv_mat[]);
 #endif

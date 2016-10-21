@@ -14,8 +14,7 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
               side_normal[2], up_normal[2], -forward_normal[2], 0,
               0,0,0,1};
 
-  glLoadMatrixf(trans_matrix);
-  //glMultMatrixf(trans_matrix);
+  //glLoadMatrixf(trans_matrix);
   //glTranslatef(-eye[0], -eye[1], -eye[2]);
   myTranslate(trans_matrix, -eye[0], -eye[1], -eye[2]); //move to eye
 }

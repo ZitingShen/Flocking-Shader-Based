@@ -15,7 +15,6 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
   switch(viewmode) {
     case DEFAULT:
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
     //gluLookAt(0, 2, TOWER_HEIGHT, midpoint[0], midpoint[1], midpoint[2], 0, 0, 1);
     eye[0] = 0;
     eye[1] = 0.01;
@@ -31,7 +30,6 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
 
     case TRAILING:
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 
     camera_pos = center
                  - flock_direction*(distance + 2*max_distance)
@@ -52,7 +50,6 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
 
     case SIDE: {
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 
     vec3 v3 = reduce(flock_direction);
     vec3 side_v3 = cross(v3, vec3(0, 0, 1));
@@ -91,20 +88,23 @@ void init_background(GLfloat squares_pos[][2]) {
 }
 
 //TODO: change draw to shader_based
-void draw_background(GLfloat squares_pos[][2]) {
+void draw_background(GLfloat squares_pos[][2], GLfloat mv_mat[]) {
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_SQUARE);
+  GLfloat mv_mat_copy[16];
   for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
     if(i % 2 == 0) {
       glColor3f(CHESS_BOARD_COLOUR_X[0], CHESS_BOARD_COLOUR_X[1], CHESS_BOARD_COLOUR_X[2]);
     } else {
       glColor3f(CHESS_BOARD_COLOUR_Y[0], CHESS_BOARD_COLOUR_Y[1], CHESS_BOARD_COLOUR_Y[2]);
     }
-    glPushMatrix();
-    glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
+    //glPushMatrix();
+    memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
+    myTranslate(mv_mat_copy, squares_pos[i][0], squares_pos[i][1], -10);
+    //glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
     glPointSize(5);
     glDrawArrays(GL_QUADS, 0, 4);
-    glPopMatrix();
+    //glPopMatrix();
   }
   glDisableClientState(GL_VERTEX_ARRAY);
 }

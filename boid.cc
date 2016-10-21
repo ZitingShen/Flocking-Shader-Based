@@ -202,7 +202,7 @@ void init_a_flock(List* a_flock){
 }
 
 //TODO: redo draw in shader_based
-void draw_a_flock(List* a_flock){
+void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
   if (a_flock == NULL) return;
   NODE* current = NULL;
   BOID* some_boid = NULL;
@@ -226,30 +226,38 @@ void draw_a_flock(List* a_flock){
     glEnableClientState(GL_COLOR_ARRAY);
     glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
 
-    glPushMatrix(); // tranformation for boids
+    glPushMatrix();
+    //GLfloat mv_mat_copy[16];
+    //memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
+    //myTranslate(mv_mat_copy, some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
+    //myRotate(mv_mat_copy, angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
     glTranslatef(some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
-    //glRotatef(angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
-    
-    glPushMatrix(); // draw left wings
-    //glRotatef(-some_boid->wing_rotation, 0, 1, 0);
+    glRotatef(angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
+
+    glPushMatrix();
+    //GLfloat mv_mat_copy2[16];
+    //memcpy(mv_mat_copy2, mv_mat_copy, sizeof(GLfloat)*16);
+    //myRotate(mv_mat_copy2, -some_boid->wing_rotation, 0, 1, 0);
+    glRotatef(-some_boid->wing_rotation, 0, 1, 0);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
     glPopMatrix();
-    
-    //glRotatef(some_boid->wing_rotation, 0, 1, 0); // draw right wings
+
+    //myRotate(mv_mat_copy, some_boid->wing_rotation, 0, 1, 0); // draw right wings
+    glRotatef(some_boid->wing_rotation, 0, 1, 0); // draw right wings
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);  
     glPopMatrix();
 
     glDisableClientState(GL_COLOR_ARRAY);
     glColor3f(SHADES_COLOR[0], SHADES_COLOR[1], SHADES_COLOR[2]);
     
-    glPushMatrix(); // transformation for shades
+    glPushMatrix();
+    //GLfloat mv_mat_copy3[16];
+    //memcpy(mv_mat_copy3, mv_mat, sizeof(GLfloat)*16);
+    //myTranslate(mv_mat_copy3, some_boid->pos[0], some_boid->pos[1], 0);
+    //myRotate(mv_mat_copy, shades_angle, 0, 0, 1);
     glTranslatef(some_boid->pos[0], some_boid->pos[1], 0);
-    //glRotatef(shades_angle, 0, 0, 1);
-    
-    glPushMatrix(); // draw left wings
+    glRotatef(shades_angle, 0, 0, 1);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
-    glPopMatrix();
-    
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT); // draw right wings
     glPopMatrix();
 
