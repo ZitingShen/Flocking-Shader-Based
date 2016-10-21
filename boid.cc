@@ -4,8 +4,8 @@ using namespace std;
 
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  a_boid->pos();
-  a_boid->velocity();
+  new (&(a_boid->pos)) vec4();
+  new (&(a_boid->velocity)) vec4();
   a_boid->velocity = SPAWN_VELOCITY;
   a_boid->partner_radius = PARTNER_RADIUS;
   a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION)
@@ -19,8 +19,8 @@ BOID* new_boid(){
 
 BOID* new_boid(vec4 velocity, float radius, vec4 pos){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  a_boid->pos();
-  a_boid->velocity();
+  new (&(a_boid->pos)) vec4();
+  new (&(a_boid->velocity)) vec4();
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
@@ -120,12 +120,12 @@ vec4 flock_centroid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0)
     return vec4(0, 0, 0, 1);
   NODE* current = a_flock->head;
-  vec4 centroid = vec4(0, 0, 0, 1);
+  vec4 centroid(0, 0, 0, 1);
   while (current != NULL){
      centroid += get_current_pos((BOID*)(current->data));
      current = current->next;
   }
-  return centroid*(float)((1.0f/(float)a_flock->length));
+  return centroid*((1.0f/(float)a_flock->length));
 }
 
 vec4 mid_point(List* a_flock, GOAL* a_goal){
