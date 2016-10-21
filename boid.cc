@@ -112,15 +112,12 @@ void update_wing_rotation(List* a_flock){
   }
 }
 
-vec4 get_current_pos(BOID* a_boid){
-  return a_boid->pos; //order matters
-}
-
 vec4 flock_centroid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0)
     return vec4(0, 0, 0, 1);
   NODE* current = a_flock->head;
   vec4 centroid(0, 0, 0, 1);
+  
   while (current != NULL){
      centroid += ((BOID*)(current->data))->pos;
      current = current->next;
@@ -154,7 +151,7 @@ float flock_radius(List* a_flock){
   NODE* current = a_flock->head;
   vec4 centroid = flock_centroid(a_flock);
   while (current != NULL){
-    dis = distance(get_current_pos((BOID*) (current->data)), centroid);
+    dis = distance(((BOID*) (current->data))->pos, centroid);
     max_r = max_r < dis ? dis : max_r;
     current = current->next;
   }
@@ -266,7 +263,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
   vec4 v_modifier(0, 0, 0, 0);
   while (current!=NULL){
-    v_modifier = a_goal->pos - get_current_pos((BOID*)(current->data));
+    v_modifier = a_goal->pos - ((BOID*)(current->data))->pos;
     if (length(v_modifier) > MAX_ATTRACTION_INFLUENCE) {
       v_modifier = normalise(v_modifier)*MAX_ATTRACTION_INFLUENCE;
     }
