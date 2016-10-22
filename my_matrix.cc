@@ -795,7 +795,7 @@ vec4 normalise(const vec4& vec_i){
 
 float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal){
   float angle = acos(dot(normalise(vec_i), normalise(vec_ii)));
-  bool pos_ang = dot(cross(vec_i, vec_ii), normal) > 0;
+  bool pos_ang = dot(normal, cross(vec_i, vec_ii)) > 0;
   return pos_ang?angle:-angle;
 }
 

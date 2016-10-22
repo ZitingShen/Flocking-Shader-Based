@@ -1,7 +1,7 @@
 #include "view.h"
 #include "gl_replacement.h"
 
-void change_view(viewMode viewmode, List *flock, GOAL *goal) {
+void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   vec4 center = flock_centroid(flock);
   vec4 midpoint = mid_point(flock, goal);
   float max_distance =  flock_radius(flock);
@@ -25,7 +25,7 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
-    myLookAt(eye, centre, up);
+    myLookAt(mv_mat, eye, centre, up);
     break;
 
     case TRAILING:
@@ -45,7 +45,7 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
-    myLookAt(eye, centre, up);
+    myLookAt(mv_mat, eye, centre, up);
     break;
 
     case SIDE: {
@@ -68,7 +68,7 @@ void change_view(viewMode viewmode, List *flock, GOAL *goal) {
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
-    myLookAt(eye, centre, up);
+    myLookAt(mv_mat, eye, centre, up);
     }
     break;
     default:
@@ -98,13 +98,11 @@ void draw_background(GLfloat squares_pos[][2], GLfloat mv_mat[]) {
     } else {
       glColor3f(CHESS_BOARD_COLOUR_Y[0], CHESS_BOARD_COLOUR_Y[1], CHESS_BOARD_COLOUR_Y[2]);
     }
-    //glPushMatrix();
+
     memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
     myTranslate(mv_mat_copy, squares_pos[i][0], squares_pos[i][1], -10);
-    //glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
     glPointSize(5);
     glDrawArrays(GL_QUADS, 0, 4);
-    //glPopMatrix();
   }
   glDisableClientState(GL_VERTEX_ARRAY);
 }

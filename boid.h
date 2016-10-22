@@ -19,23 +19,23 @@ const vec3 BOID_COLOUR_FLOCK_I(0.474, 0.118, 0.114);
 const vec3 BOID_COLOUR_FLOCK_II(0.420, 0.792, 0.886);
 const vec3 SHADES_COLOR (0.182, 0.008, 0.235);
 
-const vec4 A_BOID[] =
-            {vec4(0, 0, 0, 1), // position of the centroid
-             vec4(0, BOID_SIZE*2, 0, 1), // position of the head
-             vec4(-BOID_SIZE, -BOID_SIZE, 0, 1), // position of the left vertex
-             vec4(BOID_SIZE, -BOID_SIZE, 0, 1)}; // position of the right vertex
+const GLfloat A_BOID[]=
+            {0, 0, 0, 1, // position of the centroid
+             0, BOID_SIZE*2, 0, 1, // position of the head
+             -BOID_SIZE, -BOID_SIZE, 0, 1, // position of the left vertex
+             BOID_SIZE, -BOID_SIZE, 0, 1}; // position of the right vertex
 
-const vec3 A_BOID_COLORS[] = {
-  vec3(1.0, 1.0, 1.0), 
-  vec3(BOID_COLOUR_FLOCK_I[0], BOID_COLOUR_FLOCK_I[1], BOID_COLOUR_FLOCK_I[2]),
-  vec3(1.0, 1.0, 1.0), 
-  vec3(1.0, 1.0, 1.0)};
+const GLfloat A_BOID_COLORS[] = {
+  1.0, 1.0, 1.0, 
+  BOID_COLOUR_FLOCK_I[0], BOID_COLOUR_FLOCK_I[1], BOID_COLOUR_FLOCK_I[2],
+  1.0, 1.0, 1.0, 
+  1.0, 1.0, 1.0};
 
-const vec3 ANOTHER_BOID_COLORS[] = {
-  vec3(1.0, 1.0, 1.0), 
-  vec3(BOID_COLOUR_FLOCK_II[0], BOID_COLOUR_FLOCK_II[1], BOID_COLOUR_FLOCK_II[2]),
-  vec3(1.0, 1.0, 1.0), 
-  vec3(1.0, 1.0, 1.0)};
+const GLfloat ANOTHER_BOID_COLORS[] = {
+  1.0, 1.0, 1.0, 
+  BOID_COLOUR_FLOCK_II[0], BOID_COLOUR_FLOCK_II[1], BOID_COLOUR_FLOCK_II[2],
+  1.0, 1.0, 1.0, 
+  1.0, 1.0, 1.0};
 
 const vec3 centroid_init(0, 0, 0);
 const vec3 head_init(0, BOID_SIZE*2, 0);

@@ -28,9 +28,9 @@
 #define MAX_ATTRACTION_INFLUENCE  ((float) 10.0)
 
 #define MAX_WING_ROTATION         45
-#define WING_ROTATION_PER_FRAME   0.1
+#define WING_ROTATION_PER_FRAME   0.01
 
-#define RANDOMISE_V_FACTOR        45
+#define RANDOMISE_V_FACTOR        60
 #define SPAWN_CUBE_LENGTH         100.0
 
 #define BOID_SIZE                 100
@@ -44,7 +44,7 @@
 
 #define TOWER_HEIGHT              4000
 #define CAMERA_NEAR               2
-#define CAMERA_FAR                (TOWER_HEIGHT*200)
+#define CAMERA_FAR                (TOWER_HEIGHT*2000)
 
 #define BG_SQUARE_SIDE            2000.0
 #define BG_SQUARE_NUM             97   // must be an odd number

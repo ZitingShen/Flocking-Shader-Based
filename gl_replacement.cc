@@ -1,6 +1,6 @@
 #include "gl_replacement.h"
 
-void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
+void myLookAt(GLfloat mv_mat[], GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
   vec3 forward_normal = normalise(vec3(centre[0] - eye[0],
                                        centre[1] - eye[1],
                                        centre[2] - eye[2]));
@@ -17,6 +17,7 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
   //glLoadMatrixf(trans_matrix);
   //glTranslatef(-eye[0], -eye[1], -eye[2]);
   myTranslate(trans_matrix, -eye[0], -eye[1], -eye[2]); //move to eye
+  memcpy(mv_mat, trans_matrix, sizeof(GLfloat)*16);
 }
 
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){

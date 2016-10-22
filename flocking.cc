@@ -43,7 +43,7 @@ int main(){
     glfwPollEvents();
 
     if(!IS_PAUSED || PAUSE_TIME > 0) {
-      change_view(VIEW_MODE, A_FLOCK, A_GOAL);
+      change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL);
       update_goal_velocity(A_GOAL);
       update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK);
@@ -55,6 +55,7 @@ int main(){
       //}
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
+        glGetFloatv(GL_MODELVIEW_MATRIX, MV_MAT);
         draw_background(SQUARES_POS, MV_MAT);
         draw_a_flock(A_FLOCK, MV_MAT);
         draw_a_goal(A_GOAL, MV_MAT);
@@ -93,7 +94,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  change_view(VIEW_MODE, A_FLOCK, A_GOAL);
+  change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL);
 }
 
 void cleanup(){
