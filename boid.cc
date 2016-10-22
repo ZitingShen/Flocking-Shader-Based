@@ -78,7 +78,7 @@ void update_velocity(List* a_flock, GOAL* a_goal){
           }else if (dis_to_partner < COLLIDING){
             s_modifier += (source->pos - target->pos) * 1.05;
             a_modifier += target->velocity;
-            c_modifier += target->pos * 0.99;
+            c_modifier += target->pos * 0.95;
           }else{
             s_modifier += source->pos - target->pos;
             a_modifier += target->velocity;
@@ -87,7 +87,7 @@ void update_velocity(List* a_flock, GOAL* a_goal){
           if(close_to_goal){// if close to goal, scatter
             //cout << "now near goal" << endl;
             s_modifier = s_modifier * 1.5;
-            a_modifier = a_modifier * 0.7;
+            a_modifier = a_modifier * 0.8;
           } 
         } else {
           num_of_boids_other_flocks++;
@@ -97,7 +97,7 @@ void update_velocity(List* a_flock, GOAL* a_goal){
       potential_partner = potential_partner->next;
     }
     if (num_of_partners != 0) {
-      cout << "num_of_partners = " << num_of_partners << endl;
+      //cout << "num_of_partners = " << num_of_partners << endl;
       s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners);
       a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT;
       c_modifier = (c_modifier*(1/(float)num_of_partners) - source->pos)*COHESION_WEIGHT;
@@ -303,10 +303,10 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
     a_boid = (BOID*)(current->data);
     v_modifier = a_goal->pos - a_boid->pos;
     dis_to_goal = length(v_modifier);
-    max_attraction = 0.5*length(a_boid->velocity);
+    max_attraction = 0.6*length(a_boid->velocity);
     if (APPROACHING_GOAL<dis_to_goal){ // not near the goal
       if (length(v_modifier) > max_attraction) {
-        cout << "exceed max attraction " << endl;
+        //cout << "exceed max attraction " << endl;
         v_modifier = normalise(v_modifier)*max_attraction;
       }
       v_modifier = v_modifier*ATTRACTION_WEIGHT;
@@ -314,11 +314,17 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
     }else{ // near goal scenario
       /* Let's slow down */
       if (length(a_boid->velocity) > 3.0*length(a_goal->velocity)){
-        cout << "slowing down" << endl;
+        //cout << "slowing down" << endl;
         a_boid->velocity = a_boid->velocity * 0.99;
       }
     }
-    current = current->next;
+    if (length(a_boid->velocity) > 4.0*length(a_goal->velocity)){
+      cout << "applying absolute cap" << endl;
+      if(length(a_boid->velocity) > BOID_SPEED_FLOOR){
+        a_boid->velocity = normalise(a_boid->velocity) * 4.0*length(a_goal->velocity);
+      }
+    }
+    current = current->next; 
   }
 }
 
@@ -331,4 +337,47 @@ void print_flock(List* a_flock) {
     cout << "Flock" << i << "'s radius: " << radius << endl;
     cout << endl;
   }
+}
+
+PREDATOR* create_a_predator(List* a_flock, GOAL* a_goal, bool& guardian){
+  PREDATOR* a_predator = new PREDATOR;
+  a_predator->pos = (a_goal->pos + (flock_centroid(a_flock, 0) + flock_centroid(a_flock, 1)) * 0.5) * 0.5;
+  a_predator->velocity = a_goal->velocity;
+  a_predator->deterrence_range = 1000;
+  guardian = true; // enable predator
+  return a_predator;
+}
+
+void draw_predator(PREDATOR* a_predator, bool& guardian){
+  if (!guardian){
+    return;
+  }
+}
+
+void move_predator(PREDATOR* a_predator, GOAL* a_goal){ // orbiting the goal
+  vec4 acceleration = (a_goal->pos - a_predator->pos) * 0.1;
+  a_predator->velocity += acceleration;
+  a_predator->pos += a_predator->velocity;
+}
+
+void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, bool& guardian){
+  if (!guardian){
+    return;
+  }
+  NODE* current=a_flock->head;
+  BOID* a_boid = NULL;
+  vec4 dis_to_predator;
+  while (current!=NULL){
+    a_boid = (BOID*)current->data;
+    if (distance(a_boid->pos, a_predator->pos) < a_predator->deterrence_range){
+      dis_to_predator = a_boid->pos - a_predator->pos;
+      a_boid->velocity += dis_to_predator * DETERRENCE_WEIGHT;
+    }
+    current = current->next;
+  }
+}
+
+void delete_predator(PREDATOR* a_predator, bool& guardian){
+  guardian = false;
+  delete a_predator;
 }

@@ -6,7 +6,7 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   vec4 midpoint = (mid_point(flock, goal, 0) + mid_point(flock, goal, 1)) * 0.5;
   float distance = (get_d(flock, goal, 0) + get_d(flock, goal, 1)) * 0.5;
   vec4 camera_pos;
-  vec4 flock_direction = normalise(get_u(flock, goal, 0));
+  vec4 flock_direction = normalise((get_u(flock, goal, 0) + get_u(flock, goal, 1)) * 0.5);
 
   GLfloat eye[] = {0, 2500, TOWER_HEIGHT};
   GLfloat centre[] = {midpoint[0], midpoint[1], midpoint[2]};
@@ -16,7 +16,7 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
     case TRAILING:
     camera_pos = centroid
                  - flock_direction*distance*2
-                 + vec4(0, 0, 1, 0)*TOWER_HEIGHT*0.8f;
+                 + vec4(0, 0, 1, 0)*TOWER_HEIGHT*0.7f;
     unpack(camera_pos, eye);
     break;
 

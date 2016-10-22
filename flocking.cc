@@ -172,9 +172,9 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
       A_GOAL->DECELERATE = true;
       break;
 
-      //case GLFW_KEY_B:
-      //AN_OBSTACLE->enable = !AN_OBSTACLE->enable;
-      //break;
+      case GLFW_KEY_B:
+        teleport_goal(A_GOAL);
+      break;
 
       case GLFW_KEY_Q:
       case GLFW_KEY_ESCAPE:

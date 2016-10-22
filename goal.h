@@ -38,6 +38,7 @@ typedef struct _goal{
 
 GOAL* new_goal();
 void update_goal_velocity(GOAL* a_goal);
+void teleport_goal(GOAL* a_goal);
 void update_goal_pos(GOAL* a_goal);
 void draw_a_goal(GOAL* a_goal, GLfloat mv_mat[]);
 void print_goal(GOAL* a_goal);

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
@@ -16,17 +17,16 @@
 #define RADIAN_TO_DEGREE          57.29578 // 180 over pi
 #define	DEGREE_TO_RADIAN		  0.00873
 
-#define PARTNER_RADIUS            250
+#define PARTNER_RADIUS            200
 #define DEFAULT_FLOCK_SIZE        100
 #define DEFAULT_FLOCK_NUM         2
 
 #define SEPARATION_WEIGHT         ((float) 0.002)
 #define ALIGNMENT_WEIGHT          ((float) 0.001)
-#define COHESION_WEIGHT           ((float) 0.001)
+#define COHESION_WEIGHT           ((float) 0.0015)
 #define ATTRACTION_WEIGHT         ((float) 0.05)
 #define STAY_IN_FLOCK_WEIGHT	  ((float) 0.003)
-#define DETERRENCE_WEIGHT         ((float) 0.5) // the most significant weight
-//#define MAX_ATTRACTION_INFLUENCE  ((float) 35.0)
+#define DETERRENCE_WEIGHT         ((float) 0.05) // the most significant weight
 
 #define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.01

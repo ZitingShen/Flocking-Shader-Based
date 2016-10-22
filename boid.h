@@ -52,6 +52,7 @@ const float COLLIDING  = 0.2 * PARTNER_RADIUS; // too close to partner
 const float FLOCK_RAIUS_CAP = 10 * BOID_SIZE;
 const float APPROACHING_GOAL = GOAL_SIZE * 20.0;
 const float Z_SPEED_CAP = 20;
+const float BOID_SPEED_FLOOR = 100;
 
 typedef struct _boid{
   GLfloat wing_rotation;          // for flapping extra credit
@@ -66,7 +67,6 @@ typedef struct _predator{
   vec4 pos;
   vec4 velocity;
   float deterrence_range;
-  float attack_range;
 } PREDATOR;
 
 BOID* new_boid();
@@ -95,5 +95,11 @@ void draw_a_flock(List* a_flock, GLfloat mv_mat[]);
 void print_flock(List* a_flock);
 //void update_rotation(BOID* a_boid);
 /* To DO */
-void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
+
+PREDATOR* create_a_predator(List* a_flock, GOAL* a_goal, bool& guardian);
+void move_predator(PREDATOR* a_predator, GOAL* a_goal);
+void draw_predator(PREDATOR* a_predator, bool& guardian);
+void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, bool& guardian);
+void delete_predator(PREDATOR* a_predator, bool& guardian);
+
 #endif

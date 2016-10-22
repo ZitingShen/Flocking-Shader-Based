@@ -62,6 +62,13 @@ void update_goal_pos(GOAL* a_goal){
   a_goal->pos += a_goal->velocity;
 }
 
+void teleport_goal(GOAL* a_goal){
+  srand(time(NULL));
+  a_goal->pos[0] += rand() % 5000 - 10000;
+  srand(time(NULL));
+  a_goal->pos[1] += rand() % 5000 - 10000;
+}
+
 void draw_a_goal(GOAL* a_goal, GLfloat mv_mat[]){
   glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
