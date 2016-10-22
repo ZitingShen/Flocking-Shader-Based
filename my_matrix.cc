@@ -809,27 +809,36 @@ void unpack(const vec& vec_i, GLfloat arr[]){
   }
 }
 
-//generate identity or zeor matrix with specified dimension
-mat2 all_zero_mat2(mat2 m){
-  return m;
+//identify or zero-out the given matrix
+void all_zero_mat2(mat2 m){
+  for (int i=0; i<4; i++){
+    m[i] = 0;
+  }
 }
 
-mat3 all_zero_mat3(mat3 m){
-  return m;
+void all_zero_mat3(mat3& m){
+  for (int i=0; i<9; i++){
+    m[i] = 0;
+  }
 }
 
-mat4 all_zero_mat4(mat4 m){
-  return m;
+void all_zero_mat4(mat4& m){
+  for (int i=0; i<16; i++){
+    m[i] = 0;
+  }
 }
 
-mat2 identity_mat2(mat2 m){
-  return m;
+void identity_mat2(mat2& m){
+  for (int i=0; i<9; i++){
+    m[i] = (i % 3 == 0)?1:0;
+  }
 }
 
-mat3 identity_mat3(mat3 m){
-  return m;
+void identity_mat3(mat3& m){
+  for (int i=0; i<9; i++){
+    m[i] = (i % 4 == 0)?1:0;
+  }
 }
-
 
 void identity_mat4(mat4& m){
   for (int i=0; i<16; i++){

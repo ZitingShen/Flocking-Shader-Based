@@ -2,11 +2,9 @@
 #include "gl_replacement.h"
 
 void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
-  vec4 centroid = flock_centroid(flock, 0);
-  vec4 midpoint = mid_point(flock, goal, 0);
-  float distance = get_d(flock, goal, 0);
-  distance = distance < MIN_FLOCK_RADIUS? MIN_FLOCK_RADIUS:distance;
-  distance = distance > MAX_FLOCK_RADIUS? MAX_FLOCK_RADIUS:distance;
+  vec4 centroid = (flock_centroid(flock, 0) + flock_centroid(flock, 1)) * 0.5;
+  vec4 midpoint = (mid_point(flock, goal, 0) + mid_point(flock, goal, 1)) * 0.5;
+  float distance = (get_d(flock, goal, 0) + get_d(flock, goal, 1)) * 0.5;
   vec4 camera_pos;
   vec4 flock_direction = normalise(get_u(flock, goal, 0));
 
