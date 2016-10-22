@@ -1,4 +1,5 @@
 #include "boid.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -18,7 +19,7 @@ BOID* new_boid(){
   return a_boid;
 }
 
-BOID* new_boid(vec4 velocity, float radius, vec4 pos){
+BOID* new_boid(const vec4& velocity, float radius, const vec4& pos){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos.reset();
   a_boid->velocity.reset();
@@ -37,7 +38,7 @@ bool is_partner(BOID* source, BOID* target){
   return source->partner_radius >= distance(source->pos, target->pos);
 }
 
-void update_velocity(List* a_flock){
+void update_velocity(List* a_flock, GOAL* a_goal){
   if (a_flock == NULL || a_flock->length < 2) return;
   NODE* current_boid = a_flock->head;
   NODE* potential_partner;
@@ -45,8 +46,11 @@ void update_velocity(List* a_flock){
   vec4 a_modifier(0, 0, 0, 0);
   vec4 c_modifier(0, 0, 0, 0);
   vec4 f_modifier(0, 0, 0, 0);
+  vec4 flock_center;
   int num_of_partners;
   int num_of_boids_other_flocks;
+  bool close_to_goal = false;
+  float dis_to_partner;
 
   BOID* source = NULL;
   BOID* target = NULL;
@@ -55,6 +59,7 @@ void update_velocity(List* a_flock){
     num_of_boids_other_flocks = 0;
     potential_partner = a_flock->head;
     num_of_partners = 0;
+    close_to_goal = length(a_goal->pos - ((BOID*)(current_boid->data))->pos) < APPROACHING_GOAL;
     while (potential_partner != NULL){
       if (potential_partner == current_boid) {
         potential_partner = potential_partner->next;
@@ -65,9 +70,25 @@ void update_velocity(List* a_flock){
       if (is_partner(source, target)){
         if (target->flock_index == source->flock_index) {
           num_of_partners++;
-          s_modifier += source->pos - target->pos;
-          a_modifier += target->velocity;
-          c_modifier += target->pos;
+          dis_to_partner = distance(source->pos, target->pos);
+          if (dis_to_partner > SCATTERING){
+            s_modifier += (source->pos - target->pos) * 0.95;
+            a_modifier += target->velocity;
+            c_modifier += target->pos * 1.05;
+          }else if (dis_to_partner < COLLIDING){
+            s_modifier += (source->pos - target->pos) * 1.05;
+            a_modifier += target->velocity;
+            c_modifier += target->pos * 0.99;
+          }else{
+            s_modifier += source->pos - target->pos;
+            a_modifier += target->velocity;
+            c_modifier += target->pos;
+          }
+          if(close_to_goal){// if close to goal, scatter
+            //cout << "now near goal" << endl;
+            s_modifier = s_modifier * 1.5;
+            a_modifier = a_modifier * 0.7;
+          } 
         } else {
           num_of_boids_other_flocks++;
           f_modifier += source->pos - target->pos;
@@ -76,6 +97,7 @@ void update_velocity(List* a_flock){
       potential_partner = potential_partner->next;
     }
     if (num_of_partners != 0) {
+      cout << "num_of_partners = " << num_of_partners << endl;
       s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners);
       a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT;
       c_modifier = (c_modifier*(1/(float)num_of_partners) - source->pos)*COHESION_WEIGHT;
@@ -85,6 +107,14 @@ void update_velocity(List* a_flock){
       f_modifier = f_modifier*(DETERRENCE_WEIGHT/(float)num_of_boids_other_flocks);
       source->velocity += f_modifier;
     }
+
+    flock_center = flock_centroid(a_flock, source->flock_index);
+    if (distance(source->pos, flock_center) > FLOCK_RAIUS_CAP){
+      source->velocity += (flock_center - source->pos) * STAY_IN_FLOCK_WEIGHT;
+    }
+
+    source->velocity[2] = max(-Z_SPEED_CAP, min(source->velocity[2], Z_SPEED_CAP));
+
     current_boid = current_boid->next;
   }
 }
@@ -266,13 +296,28 @@ void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
 void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
   vec4 v_modifier(0, 0, 0, 0);
+  float dis_to_goal;
+  float max_attraction;
+  BOID* a_boid = NULL;
   while (current!=NULL){
-    v_modifier = a_goal->pos - ((BOID*)(current->data))->pos;
-    if (length(v_modifier) > MAX_ATTRACTION_INFLUENCE) {
-      v_modifier = normalise(v_modifier)*MAX_ATTRACTION_INFLUENCE;
+    a_boid = (BOID*)(current->data);
+    v_modifier = a_goal->pos - a_boid->pos;
+    dis_to_goal = length(v_modifier);
+    max_attraction = 0.5*length(a_boid->velocity);
+    if (APPROACHING_GOAL<dis_to_goal){ // not near the goal
+      if (length(v_modifier) > max_attraction) {
+        cout << "exceed max attraction " << endl;
+        v_modifier = normalise(v_modifier)*max_attraction;
+      }
+      v_modifier = v_modifier*ATTRACTION_WEIGHT;
+      a_boid->velocity += v_modifier;
+    }else{ // near goal scenario
+      /* Let's slow down */
+      if (length(a_boid->velocity) > 3.0*length(a_goal->velocity)){
+        cout << "slowing down" << endl;
+        a_boid->velocity = a_boid->velocity * 0.99;
+      }
     }
-    v_modifier = v_modifier*ATTRACTION_WEIGHT;
-    ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
 }

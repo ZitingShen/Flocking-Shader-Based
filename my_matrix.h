@@ -149,20 +149,12 @@ vec4 normalise(const vec4& vec_i);
 float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal); //returns angle in RADIAN
 void unpack(const vec& vec_i, GLfloat arr[]);
 
-mat2 all_zero_mat2(mat2 m = mat2(0,0,
-                            0,0));
-mat3 all_zero_mat3(mat3 m = mat3(0,0,0,
-                            0,0,0,
-                            0,0,0));
-mat4 all_zero_mat4(mat4 m = mat4(0,0,0,0,
-                            0,0,0,0,
-                            0,0,0,0,
-                            0,0,0,0));
+void all_zero_mat2(mat2& m);
+void all_zero_mat3(mat3& m);
+void all_zero_mat4(mat4& m);
 
-mat2 identity_mat2(mat2 m = mat2(0,1,1,0));
-mat3 identity_mat3(mat3 m = mat3(1,0,0,
-                            0,1,0,
-                            0,0,1));
+void identity_mat2(mat2& m);
+void identity_mat3(mat3& m);
 void identity_mat4(mat4& m);
 
 #endif

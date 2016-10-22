@@ -7,8 +7,9 @@
 #include "gl_replacement.h"
 #include <time.h>
 
-const vec4 SPAWN_POSITION_I(1000.0, 1000.0, 1500.0, 1);
-const vec4 SPAWN_POSITION_II(-1000.0, -1000.0, 500.0, 1);
+
+const vec4 SPAWN_POSITION_I(1000.0, 1000.0, 3000.0, 1);
+const vec4 SPAWN_POSITION_II(-1000.0, -1000.0, 3000.0, 1);
  //initial speed parallel with y-axis
 const vec4 SPAWN_VELOCITY(0, 0.01, 0, 0);
 const vec4 EMPTY_POS(0, 0, 0, 1);
@@ -45,6 +46,13 @@ const vec3 right_init(BOID_SIZE, -BOID_SIZE, 0);
 const GLubyte A_BOID_LEFT[3] = {0, 1, 2};
 const GLubyte A_BOID_RIGHT[3] = {0, 3, 1}; //drawing two triangles;
 
+/* Dynamically dealing with Weights */
+const float SCATTERING = 0.8 * PARTNER_RADIUS; // too far away from partner
+const float COLLIDING  = 0.2 * PARTNER_RADIUS; // too close to partner
+const float FLOCK_RAIUS_CAP = 10 * BOID_SIZE;
+const float APPROACHING_GOAL = GOAL_SIZE * 20.0;
+const float Z_SPEED_CAP = 20;
+
 typedef struct _boid{
   GLfloat wing_rotation;          // for flapping extra credit
   int wing_rotation_direction;    // 1 for downwards, 0 for upwards
@@ -62,10 +70,10 @@ typedef struct _predator{
 } PREDATOR;
 
 BOID* new_boid();
-BOID* new_boid(vec4 velocity, float radius, vec4 pos);
+BOID* new_boid(const vec4& velocity, float radius, const vec4& pos);
 
 bool is_partner(BOID* source, BOID* target);
-void update_velocity(List* a_flock);
+void update_velocity(List* a_flock, GOAL* a_goal);
 void update_pos(List* a_flock);
 void update_wing_rotation(List* a_flock);
 

@@ -5,13 +5,13 @@
 #include "gl_replacement.h"
 
 const vec4 DEFAULT_GOAL_SPAWN_VELOCITY(10, 10, 0.01, 0); // initiated with a positive speed on Z-axis
-const vec4 DEFAULT_GOAL_SPAWN_POSITION(0, 5000, 1000, 1);
+const vec4 DEFAULT_GOAL_SPAWN_POSITION(0, 5000, 3000, 1);
 
 const GLfloat CUBE_VERTICES[][3] = {
-                           {-100.0, -100.0, 100.0},  {-100.0, 100.0, 100.0}, 
-                           {100.0, 100.00, 100.0},    {100.0, -100.0, 100.0}, 
-                           {-100.0, -100.0, -100.0}, {-100.0, 100.0, -100.0}, 
-                           {100.0, 100.0, -100.0},   {100.0, -100.0, -100.0}};
+                           {-GOAL_SIZE, -GOAL_SIZE, GOAL_SIZE},  {-GOAL_SIZE, GOAL_SIZE, GOAL_SIZE}, 
+                           {GOAL_SIZE, GOAL_SIZE, GOAL_SIZE},    {GOAL_SIZE, -GOAL_SIZE, GOAL_SIZE}, 
+                           {-GOAL_SIZE, -GOAL_SIZE, -GOAL_SIZE}, {-GOAL_SIZE, GOAL_SIZE, -GOAL_SIZE}, 
+                           {GOAL_SIZE, GOAL_SIZE, -GOAL_SIZE},   {GOAL_SIZE, -GOAL_SIZE, -GOAL_SIZE}};
 
 const GLfloat CUBE_COLORS[][3] = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 
                                   {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, 

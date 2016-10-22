@@ -16,16 +16,17 @@
 #define RADIAN_TO_DEGREE          57.29578 // 180 over pi
 #define	DEGREE_TO_RADIAN		  0.00873
 
-#define PARTNER_RADIUS            100
-#define DEFAULT_FLOCK_SIZE        20
+#define PARTNER_RADIUS            250
+#define DEFAULT_FLOCK_SIZE        100
 #define DEFAULT_FLOCK_NUM         2
 
-#define SEPARATION_WEIGHT         ((float) 0.02)
-#define ALIGNMENT_WEIGHT          ((float) 0.01)
-#define COHESION_WEIGHT           ((float) 0.01)
+#define SEPARATION_WEIGHT         ((float) 0.002)
+#define ALIGNMENT_WEIGHT          ((float) 0.001)
+#define COHESION_WEIGHT           ((float) 0.001)
 #define ATTRACTION_WEIGHT         ((float) 0.05)
+#define STAY_IN_FLOCK_WEIGHT	  ((float) 0.003)
 #define DETERRENCE_WEIGHT         ((float) 0.5) // the most significant weight
-#define MAX_ATTRACTION_INFLUENCE  ((float) 10.0)
+//#define MAX_ATTRACTION_INFLUENCE  ((float) 35.0)
 
 #define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.01
@@ -34,10 +35,10 @@
 #define SPAWN_CUBE_LENGTH         100.0
 
 #define BOID_SIZE                 100
+#define GOAL_SIZE				  100
 
-
-#define DEFAULT_ACCELERATION_FACTOR    0.1
-#define DEFAULT_ACCELERATION_MARGIN   0.05
+#define DEFAULT_ACCELERATION_FACTOR    0.2
+#define DEFAULT_ACCELERATION_MARGIN   0.1
 #define TRUE  1
 #define FALSE 0
 
