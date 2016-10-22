@@ -18,7 +18,7 @@ BOID* new_boid(){
   return a_boid;
 }
 
-BOID* new_boid(vec4 velocity, float radius, vec4 pos){
+BOID* new_boid(const vec4& velocity, float radius, const vec4& pos){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos.reset();
   a_boid->velocity.reset();

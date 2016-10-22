@@ -5,6 +5,8 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   vec4 centroid = flock_centroid(flock, 0);
   vec4 midpoint = mid_point(flock, goal, 0);
   float distance = get_d(flock, goal, 0);
+  distance = distance < MIN_FLOCK_RADIUS? MIN_FLOCK_RADIUS:distance;
+  distance = distance > MAX_FLOCK_RADIUS? MAX_FLOCK_RADIUS:distance;
   vec4 camera_pos;
   vec4 flock_direction = normalise(get_u(flock, goal, 0));
 
@@ -27,7 +29,6 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
                  + normalise(side_v)*distance*3
                  + vec4(0, 0, 1, 0)*distance*0.3f;
     unpack(camera_pos, eye);
-    std::cout << eye[0] << " " << eye[1] << " " << eye[2] << std::endl;
     }
     break;
     default:

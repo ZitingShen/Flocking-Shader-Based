@@ -19,6 +19,8 @@
 #define PARTNER_RADIUS            100
 #define DEFAULT_FLOCK_SIZE        20
 #define DEFAULT_FLOCK_NUM         2
+#define MIN_FLOCK_RADIUS	      2000.0
+#define MAX_FLOCK_RADIUS		  3000.0
 
 #define SEPARATION_WEIGHT         ((float) 0.02)
 #define ALIGNMENT_WEIGHT          ((float) 0.01)

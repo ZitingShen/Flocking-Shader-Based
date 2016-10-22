@@ -62,7 +62,7 @@ typedef struct _predator{
 } PREDATOR;
 
 BOID* new_boid();
-BOID* new_boid(vec4 velocity, float radius, vec4 pos);
+BOID* new_boid(const vec4& velocity, float radius, const vec4& pos);
 
 bool is_partner(BOID* source, BOID* target);
 void update_velocity(List* a_flock);
