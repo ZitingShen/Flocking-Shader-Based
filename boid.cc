@@ -114,44 +114,50 @@ void update_wing_rotation(List* a_flock){
   }
 }
 
-vec4 flock_centroid(List* a_flock){
+vec4 flock_centroid(List* a_flock, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return vec4(0, 0, 0, 1);
   NODE* current = a_flock->head;
   vec4 centroid(0, 0, 0, 1);
   
+  int counter = 0;
   while (current != NULL){
-     centroid += ((BOID*)(current->data))->pos;
-     current = current->next;
+    if (((BOID*)(current->data))->flock_index != flock_index) {
+      current = current->next;
+      continue;
+    }
+    centroid += ((BOID*)(current->data))->pos;
+    counter++;
+    current = current->next;
   }
-  return centroid*((1.0f/(float)a_flock->length));
+  return centroid*(1.0f/counter);
 }
 
-vec4 mid_point(List* a_flock, GOAL* a_goal){
+vec4 mid_point(List* a_flock, GOAL* a_goal, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return vec4(0, 0, 0, 1);
-  return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
+  return (flock_centroid(a_flock, flock_index)+(a_goal->pos))*(0.5f);
 }
 
-vec4 get_u(List* a_flock, GOAL* a_goal){
+vec4 get_u(List* a_flock, GOAL* a_goal, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return vec4(0, 0, 0, 0);
-  return (a_goal->pos - flock_centroid(a_flock));
+  return (a_goal->pos - flock_centroid(a_flock, flock_index));
 }
 
-float get_d(List* a_flock, GOAL* a_goal){
+float get_d(List* a_flock, GOAL* a_goal, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return 0;
-  return distance(flock_centroid(a_flock), a_goal->pos);
+  return distance(flock_centroid(a_flock, flock_index), a_goal->pos);
 }
 
-float flock_radius(List* a_flock){
+float flock_radius(List* a_flock, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return 0;
   float max_r = 0;
   float dis   = 0;
   NODE* current = a_flock->head;
-  vec4 centroid = flock_centroid(a_flock);
+  vec4 centroid = flock_centroid(a_flock, flock_index);
   while (current != NULL){
     dis = distance(((BOID*) (current->data))->pos, centroid);
     max_r = max_r < dis ? dis : max_r;
@@ -272,10 +278,12 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
 }
 
 void print_flock(List* a_flock) {
-  vec4 centroid = flock_centroid(a_flock);
-  cout << "The flock's centroid: " << centroid[0] << ", " 
-  << centroid[1] << ", " << centroid[2] << endl;
-  float radius = flock_radius(a_flock);
-  cout << "The flock's radius: " << radius << endl;
-  cout << endl;
+  for (int i = 0; i < DEFAULT_FLOCK_NUM; i++) {
+    vec4 centroid = flock_centroid(a_flock, i);
+    cout << "Flock" << i << "'s centroid: " << centroid[0] << ", " 
+    << centroid[1] << ", " << centroid[2] << endl;
+    float radius = flock_radius(a_flock, i);
+    cout << "Flock" << i << "'s radius: " << radius << endl;
+    cout << endl;
+  }
 }

@@ -42,7 +42,7 @@
 #define FALSE 0
 
 
-#define TOWER_HEIGHT              4000
+#define TOWER_HEIGHT              8000
 #define CAMERA_NEAR               2
 #define CAMERA_FAR                (TOWER_HEIGHT*2000)
 

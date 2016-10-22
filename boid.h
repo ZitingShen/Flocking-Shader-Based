@@ -70,11 +70,11 @@ void update_pos(List* a_flock);
 void update_wing_rotation(List* a_flock);
 
 vec4 get_current_pos(BOID* a_boid);
-vec4 flock_centroid(List* a_flock);
-vec4 mid_point(List* a_flock, GOAL* a_goal);
-vec4 get_u(List* a_flock, GOAL* a_goal);
-float get_d(List* a_flock, GOAL* a_goal);
-float flock_radius(List* a_flock);
+vec4 flock_centroid(List* a_flock, int flock_index);
+vec4 mid_point(List* a_flock, GOAL* a_goal, int flock_index);
+vec4 get_u(List* a_flock, GOAL* a_goal, int flock_index);
+float get_d(List* a_flock, GOAL* a_goal, int flock_index);
+float flock_radius(List* a_flock, int flock_index);
 
 void add_a_boid(List* a_flock);
 void remove_a_boid(List* a_flock);

@@ -801,9 +801,8 @@ float oriented_angle(const vec3& vec_i, const vec3& vec_ii, const vec3& normal){
 
 void unpack(const vec& vec_i, GLfloat arr[]){
   int index = 0;
-  int dimension = vec_i.get_height();
-  for (int i = 0; i < dimension; i++) {
-    for (int j = 0; j < dimension; j++) {
+  for (int i = 0; i < vec_i.get_height(); i++) {
+    for (int j = 0; j < vec_i.get_width(); j++) {
       arr[index] = vec_i.data[index];
       index++;
     }
