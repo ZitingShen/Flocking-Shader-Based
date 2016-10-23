@@ -35,33 +35,28 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   myLookAt(mv_mat, eye, centre, up);
 }
 
-void init_background(GLfloat squares_pos[][2]) {
-  int index = 0;
+void update_background(GLfloat squares_grey[], GLfloat squares_black[],
+		       GLfloat mv_mat[]) {
+  int i = 0;
+  int index_grey = 0;
+  int index_black = 0;
+  GLfloat x, y;
   for (int row = 0; row < BG_SQUARE_NUM; row++) {
     for (int column = 0; column < BG_SQUARE_NUM; column++) {
-      squares_pos[index][0] = (row - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
-      squares_pos[index][1] = (column - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
-      index++;
+      x = (row - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
+      y = (column - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
+      GLfloat trans[16];
+      memcpy(trans, mv_mat, sizeof(GLfloat)*16);
+      if (i % 2 == 0) {
+	myTranslate(trans, x, y, 0);
+	memcpy(squares_grey+index_grey, trans, sizeof(GLfloat)*16);
+	index_grey+=16;
+      } else {
+	myTranslate(trans, x, y, 0);
+	memcpy(squares_black+index_black, trans, sizeof(GLfloat)*16);
+	index_black+=16;
+      }
+      i++;
     }
   }
-}
-
-//TODO: change draw to shader_based
-void draw_background(GLfloat squares_pos[][2], GLfloat mv_mat[]) {
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_FLOAT, 0, A_SQUARE);
-  GLfloat mv_mat_copy[16];
-  for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
-    if(i % 2 == 0) {
-      glColor3f(CHESS_BOARD_COLOUR_X[0], CHESS_BOARD_COLOUR_X[1], CHESS_BOARD_COLOUR_X[2]);
-    } else {
-      glColor3f(CHESS_BOARD_COLOUR_Y[0], CHESS_BOARD_COLOUR_Y[1], CHESS_BOARD_COLOUR_Y[2]);
-    }
-
-    memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
-    myTranslate(mv_mat_copy, squares_pos[i][0], squares_pos[i][1], -10);
-    glPointSize(5);
-    glDrawArrays(GL_QUADS, 0, 4);
-  }
-  glDisableClientState(GL_VERTEX_ARRAY);
 }

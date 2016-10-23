@@ -9,7 +9,7 @@ CFLAGS=-g -Wall -std=c++11 -I/usr/local/Cellar/glfw3/3.2.1/include
 TARGET = flocking
 SRC = $(TARGET).cc
 
-LIB = gl_replacement.o my_matrix.o list.o boid.o view.o goal.o
+LIB = gl_replacement.o my_matrix.o list.o boid.o view.o goal.o initshader.o
 all: flocking
 
 flocking: $(SRC) $(LIB)
@@ -35,6 +35,9 @@ view.o: view.cc view.h
 
 goal.o: goal.cc goal.h
 	$(CC) $(CFLAGS) -c goal.cc
+
+initshader.o: initshader.c
+	$(CC) $(CFLAGS) -c initshader.c
 
 clean:
 	rm $(TARGET) $(LIB)

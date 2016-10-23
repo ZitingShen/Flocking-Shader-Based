@@ -20,18 +20,6 @@ const vec3 BOID_COLOUR_FLOCK_I(0.474, 0.118, 0.114);
 const vec3 BOID_COLOUR_FLOCK_II(0.420, 0.792, 0.886);
 const vec3 SHADES_COLOR (0.182, 0.008, 0.235);
 
-const GLfloat A_BOID[]=
-            {0, 0, 0, 1, // position of the centroid
-             0, BOID_SIZE*2, 0, 1, // position of the head
-             -BOID_SIZE, -BOID_SIZE, 0, 1, // position of the left vertex
-             BOID_SIZE, -BOID_SIZE, 0, 1}; // position of the right vertex
-
-const GLfloat A_BOID_COLORS[] = {
-  1.0, 1.0, 1.0, 
-  BOID_COLOUR_FLOCK_I[0], BOID_COLOUR_FLOCK_I[1], BOID_COLOUR_FLOCK_I[2],
-  1.0, 1.0, 1.0, 
-  1.0, 1.0, 1.0};
-
 const GLfloat ANOTHER_BOID_COLORS[] = {
   1.0, 1.0, 1.0, 
   BOID_COLOUR_FLOCK_II[0], BOID_COLOUR_FLOCK_II[1], BOID_COLOUR_FLOCK_II[2],
@@ -42,9 +30,6 @@ const vec3 centroid_init(0, 0, 0);
 const vec3 head_init(0, BOID_SIZE*2, 0);
 const vec3 left_init(-BOID_SIZE, -BOID_SIZE, 0);
 const vec3 right_init(BOID_SIZE, -BOID_SIZE, 0);
-
-const GLubyte A_BOID_LEFT[3] = {0, 1, 2};
-const GLubyte A_BOID_RIGHT[3] = {0, 3, 1}; //drawing two triangles;
 
 /* Dynamically dealing with Weights */
 const float SCATTERING = 0.8 * PARTNER_RADIUS; // too far away from partner
