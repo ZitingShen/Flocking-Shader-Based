@@ -3,12 +3,15 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <cstring>
 #include <math.h>
 #include <time.h>
 #ifdef __APPLE__
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
 #else
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
 #endif
@@ -51,4 +54,6 @@
 
 #define BG_SQUARE_SIDE            2000.0
 #define BG_SQUARE_NUM             97   // must be an odd number
+#define BG_GREY_NUM               (BG_SQUARE_NUM*BG_SQUARE_NUM/2+1)
+#define BG_BLACK_NUM              (BG_SQUARE_NUM*BG_SQUARE_NUM/2)
 #endif

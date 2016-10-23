@@ -239,7 +239,11 @@ void add_a_boid(List* a_flock){
 
 void remove_a_boid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) return; //nothing to remove
-  list_delete(a_flock, rand() % a_flock->length);
+  int index = rand() % a_flock->length;
+  BOID* a_boid = (BOID*) list_get(a_flock, index);
+  delete[] a_boid->pos.data;
+  delete[] a_boid->velocity.data;
+  list_delete(a_flock, index);
 }
 
 void init_a_flock(List* a_flock){
@@ -255,8 +259,8 @@ void init_a_flock(List* a_flock){
   }
 }
 
-//TODO: redo draw in shader_based
 void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
+  /*
   GLfloat mv_mat_copy[16];
   GLfloat mv_mat_copy2[16];
   GLfloat mv_mat_copy3[16];
@@ -266,7 +270,7 @@ void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
   BOID* some_boid = NULL;
 
   glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(4, GL_FLOAT, 0, A_BOID);
+  glVertexPointer(4, GL_FLOAT, 0, A_BOID_LEFT);
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
 
@@ -280,7 +284,7 @@ void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
                                        vec3(0, 0, 1));
 
     glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
+    glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?COLOR_I_LEFT:ANOTHER_BOID_COLORS);
 
     memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
     myTranslate(mv_mat_copy, some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
@@ -307,6 +311,7 @@ void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
   }
 
   glDisableClientState(GL_VERTEX_ARRAY);
+  */
 }
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal){

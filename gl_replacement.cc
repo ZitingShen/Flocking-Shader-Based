@@ -45,7 +45,7 @@ void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   trans = multiply(current, trans);
   trans.transpose();
   unpack(trans, current_matrix);
-  glLoadMatrixf(current_matrix);
+  //glLoadMatrixf(current_matrix);
 }
 
 void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
