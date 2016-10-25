@@ -8,7 +8,8 @@ int IS_PAUSED = GLFW_FALSE;
 int PAUSE_TIME = 0;
 viewMode VIEW_MODE = DEFAULT;
 int WIDTH, HEIGHT;
-
+int INDEX = 0;
+bool GUARDIAN = false;
 GLfloat SQUARES_GREY[BG_GREY_NUM*16];
 GLfloat SQUARES_BLACK[BG_BLACK_NUM*16];
 
@@ -96,6 +97,7 @@ int main(){
         draw_background();
         draw_a_flock();
         draw_a_goal();
+        draw_a_predator();
       }
       glfwSwapBuffers(window);
       if (IS_PAUSED && PAUSE_TIME > 0) {
@@ -202,7 +204,7 @@ void init(GLFWwindow* window) {
   mv_black = glGetUniformLocation(black_square_program, "modelview");
   proj_black = glGetUniformLocation(black_square_program, "proj");
 
-  //shader-based for goal
+  //shader-based for goal and predator
   vbo_goal = make_bo(GL_ARRAY_BUFFER, CUBE_VERTICES, sizeof(CUBE_VERTICES));
   vbo_goal_color = make_bo(GL_ARRAY_BUFFER, CUBE_COLORS, sizeof(CUBE_COLORS));
   vbo_goal_indices = make_bo(GL_ELEMENT_ARRAY_BUFFER, CUBE_INDICES, sizeof(CUBE_INDICES));
@@ -230,13 +232,10 @@ void reshape(GLFWwindow* window, int w, int h) {
 
 void cleanup(){
   free(A_GOAL);
-<<<<<<< HEAD
-=======
   if (GUARDIAN){
     delete A_PREDATOR;
   }
-  //free(AN_OBSTACLE);
->>>>>>> 9c162a063652591bcd3ff9be90cb66d77a087cfc
+
   list_destroy(A_FLOCK);
 }
 
@@ -485,6 +484,21 @@ void draw_a_goal(){
   GLfloat trans[16];
   memcpy(trans, MV_MAT, sizeof(GLfloat)*16);
   myTranslate(trans, A_GOAL->pos[0], A_GOAL->pos[1], A_GOAL->pos[2]);
+  glUniformMatrix4fv(proj, 1, GL_FALSE, PROJ_MAT);
+  glUniformMatrix4fv(mv, 1, GL_FALSE, trans);
+  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*) 0);
+}
+
+void draw_a_predator(){
+  if (!GUARDIAN){
+    return;
+  }
+  glUseProgram(boid_program);
+  glBindVertexArray(vao_goal);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_goal_indices);
+  GLfloat trans[16];
+  memcpy(trans, MV_MAT, sizeof(GLfloat)*16);
+  myTranslate(trans, A_PREDATOR->pos[0], A_PREDATOR->pos[1], A_PREDATOR->pos[2]);
   glUniformMatrix4fv(proj, 1, GL_FALSE, PROJ_MAT);
   glUniformMatrix4fv(mv, 1, GL_FALSE, trans);
   glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (void*) 0);

@@ -81,4 +81,5 @@ static GLuint make_bo(GLenum type, const void *buf, GLsizei buf_size);
 void draw_background();
 void draw_a_flock();
 void draw_a_goal();
+void draw_a_predator();
 #endif

@@ -239,11 +239,7 @@ void add_a_boid(List* a_flock){
 
 void remove_a_boid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) return; //nothing to remove
-  int index = rand() % a_flock->length;
-  BOID* a_boid = (BOID*) list_get(a_flock, index);
-  delete[] a_boid->pos.data;
-  delete[] a_boid->velocity.data;
-  list_delete(a_flock, index);
+  list_delete(a_flock, rand() % a_flock->length);
 }
 
 void init_a_flock(List* a_flock){
@@ -319,22 +315,6 @@ PREDATOR* create_a_predator(List* a_flock, GOAL* a_goal, bool& guardian){
   return a_predator;
 }
 
-void draw_predator(PREDATOR* a_predator, bool& guardian, GLfloat mv_mat[]){
-  if (!guardian){
-    return;
-  }
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTICES);
-  glColorPointer(3, GL_FLOAT, 0, CUBE_COLORS);
-  GLfloat mv_mat_copy[16];
-  memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
-  myTranslate(mv_mat_copy, a_predator->pos[0], a_predator->pos[1], a_predator->pos[2]);
-  glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
-}
-
 void move_predator(List* a_flock, PREDATOR* a_predator, GOAL* a_goal, bool& guardian){ // orbiting the goal
   if (!guardian){
     return;
@@ -360,7 +340,7 @@ void move_predator(List* a_flock, PREDATOR* a_predator, GOAL* a_goal, bool& guar
   }
 
   a_predator->pos += a_predator->velocity;
-  cout << length(a_predator->velocity) << endl;
+  //cout << length(a_predator->velocity) << endl;
 }
 
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, bool& guardian){
