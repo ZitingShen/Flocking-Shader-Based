@@ -14,18 +14,6 @@ const vec4 SPAWN_POSITION_II(-1000.0, -1000.0, 3000.0, 1);
 const vec4 SPAWN_VELOCITY(0, 0.01, 0, 0);
 const vec4 EMPTY_POS(0, 0, 0, 1);
 
-// using burgundy for flock I
-const vec3 BOID_COLOUR_FLOCK_I(0.474, 0.118, 0.114);
-// using aquamarine for flock II
-const vec3 BOID_COLOUR_FLOCK_II(0.420, 0.792, 0.886);
-const vec3 SHADES_COLOR (0.182, 0.008, 0.235);
-
-const GLfloat ANOTHER_BOID_COLORS[] = {
-  1.0, 1.0, 1.0, 
-  BOID_COLOUR_FLOCK_II[0], BOID_COLOUR_FLOCK_II[1], BOID_COLOUR_FLOCK_II[2],
-  1.0, 1.0, 1.0, 
-  1.0, 1.0, 1.0};
-
 const vec3 centroid_init(0, 0, 0);
 const vec3 head_init(0, BOID_SIZE*2, 0);
 const vec3 left_init(-BOID_SIZE, -BOID_SIZE, 0);
@@ -75,7 +63,6 @@ void remove_a_boid(List* a_flock);
 void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal);
-void draw_a_flock(List* a_flock, GLfloat mv_mat[]);
 
 void print_flock(List* a_flock);
 //void update_rotation(BOID* a_boid);

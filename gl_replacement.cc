@@ -20,7 +20,7 @@ void myLookAt(GLfloat mv_mat[], GLfloat eye[3], GLfloat centre[3], GLfloat up[3]
   memcpy(mv_mat, trans_matrix, sizeof(GLfloat)*16);
 }
 
-void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
+void myPerspective(GLfloat proj_mat[], GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
   GLfloat y_max = tan(fovy * DEGREE_TO_RADIAN) * zNear;
   GLfloat y_min = -y_max;
   GLfloat x_max = y_max * aspect;
@@ -32,7 +32,7 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
         0, 0, -(zFar+zNear)/(zFar-zNear), -1,
         0, 0, -2*(zFar*zNear)/(zFar-zNear),0};
 
-  glLoadMatrixf(trans_matrix);
+  memcpy(proj_mat, trans_matrix, sizeof(GLfloat)*16);
 }
 
 void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
@@ -45,7 +45,6 @@ void myTranslate(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   trans = multiply(current, trans);
   trans.transpose();
   unpack(trans, current_matrix);
-  //glLoadMatrixf(current_matrix);
 }
 
 void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
@@ -72,7 +71,6 @@ void myRotate(GLfloat current_matrix[], GLfloat angle, GLfloat x, GLfloat y, GLf
   trans = multiply(current, trans);
   trans.transpose();
   unpack(trans, current_matrix);
-  glLoadMatrixf(current_matrix);
 }
 
 void myScale(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
@@ -85,5 +83,4 @@ void myScale(GLfloat current_matrix[], GLfloat x, GLfloat y, GLfloat z) {
   trans = multiply(current, trans);
   trans.transpose();
   unpack(trans, current_matrix);
-  glLoadMatrixf(current_matrix);
 }

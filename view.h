@@ -6,8 +6,7 @@
 #include "goal.h"
 #include "boid.h"
 
-const GLfloat CLEAR_COLOR[3] = {0.182, 0.008, 0.235};				  
-
+const GLfloat CLEAR_COLOR[3] = {0.182, 0.008, 0.235};			       
 
 const float CHESS_BOARD_COLOUR_X[3] = {0.449,0.451,0.494};  //grey
 const float CHESS_BOARD_COLOUR_Y[3] = {0.0, 0.0, 0.0};     //black

@@ -243,61 +243,6 @@ void init_a_flock(List* a_flock){
   }
 }
 
-void draw_a_flock(List* a_flock, GLfloat mv_mat[]){
-  /*
-  GLfloat mv_mat_copy[16];
-  GLfloat mv_mat_copy2[16];
-  GLfloat mv_mat_copy3[16];
-
-  if (a_flock == NULL) return;
-  NODE* current = NULL;
-  BOID* some_boid = NULL;
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(4, GL_FLOAT, 0, A_BOID_LEFT);
-  current = a_flock->head;
-  for (int i = 0; i < a_flock->length; i++){
-
-    some_boid = (BOID*)(current->data);
-    vec3 velocity3 = normalise(reduce(some_boid->velocity));
-    vec3 initial3 = normalise(reduce(SPAWN_VELOCITY));
-    vec3 rotate_normal = normalise(cross(velocity3, initial3));
-    float angle = oriented_angle(initial3, velocity3, 
-                                rotate_normal);
-    float shades_angle = oriented_angle(initial3, velocity3, 
-                                       vec3(0, 0, 1));
-
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?COLOR_I_LEFT:ANOTHER_BOID_COLORS);
-
-    memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
-    myTranslate(mv_mat_copy, some_boid->pos[0], some_boid->pos[1], some_boid->pos[2]);
-    myRotate(mv_mat_copy, angle, rotate_normal[0], rotate_normal[1], rotate_normal[2]);
-
-    memcpy(mv_mat_copy2, mv_mat_copy, sizeof(GLfloat)*16);
-    myRotate(mv_mat_copy2, -some_boid->wing_rotation, 0, 1, 0);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
-
-    memcpy(mv_mat_copy2, mv_mat_copy, sizeof(GLfloat)*16);
-    myRotate(mv_mat_copy2, some_boid->wing_rotation, 0, 1, 0); // draw right wings
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);  
-
-    glDisableClientState(GL_COLOR_ARRAY);
-    glColor3f(SHADES_COLOR[0], SHADES_COLOR[1], SHADES_COLOR[2]);
-    
-    memcpy(mv_mat_copy3, mv_mat, sizeof(GLfloat)*16);
-    myTranslate(mv_mat_copy3, some_boid->pos[0], some_boid->pos[1], 0);
-    myRotate(mv_mat_copy3, shades_angle, 0, 0, 1);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT); // draw right wings
-
-    current = current->next;
-  }
-
-  glDisableClientState(GL_VERTEX_ARRAY);
-  */
-}
-
 void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
   vec4 v_modifier(0, 0, 0, 0);

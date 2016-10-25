@@ -69,19 +69,6 @@ void teleport_goal(GOAL* a_goal){
   a_goal->pos[1] += rand() % 5000 - 10000;
 }
 
-void draw_a_goal(GOAL* a_goal, GLfloat mv_mat[]){
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTICES);
-  glColorPointer(3, GL_FLOAT, 0, CUBE_COLORS);
-  GLfloat mv_mat_copy[16];
-  memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
-  myTranslate(mv_mat_copy, a_goal->pos[0], a_goal->pos[1], a_goal->pos[2]);
-  glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
-}
-
 void print_goal(GOAL* a_goal) {
   cout << "The goal's position: " << a_goal->pos[0] << ", "
   << a_goal->pos[1] << ", " << a_goal->pos[2] << endl;

@@ -1,5 +1,6 @@
 #include "view.h"
 #include "gl_replacement.h"
+#include <algorithm>
 
 void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   vec4 centroid = (flock_centroid(flock, 0) + flock_centroid(flock, 1)) * 0.5;
@@ -11,7 +12,6 @@ void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal) {
   GLfloat eye[] = {0, 2500, TOWER_HEIGHT};
   GLfloat centre[] = {midpoint[0], midpoint[1], midpoint[2]};
   GLfloat up[] = {0, 0, 1};
-  glMatrixMode(GL_MODELVIEW);
   switch(viewmode) {
     case TRAILING:
     camera_pos = centroid
@@ -43,17 +43,17 @@ void update_background(GLfloat squares_grey[], GLfloat squares_black[],
   GLfloat x, y;
   for (int row = 0; row < BG_SQUARE_NUM; row++) {
     for (int column = 0; column < BG_SQUARE_NUM; column++) {
-      x = (row - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
-      y = (column - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
+      x = (row - BG_SQUARE_NUM*0.5)*BG_SQUARE_SIDE;
+      y = (column - BG_SQUARE_NUM*0.5)*BG_SQUARE_SIDE;
       GLfloat trans[16];
       memcpy(trans, mv_mat, sizeof(GLfloat)*16);
       if (i % 2 == 0) {
 	myTranslate(trans, x, y, 0);
-	memcpy(squares_grey+index_grey, trans, sizeof(GLfloat)*16);
+	memcpy(&squares_grey[index_grey], trans, sizeof(GLfloat)*16);
 	index_grey+=16;
       } else {
 	myTranslate(trans, x, y, 0);
-	memcpy(squares_black+index_black, trans, sizeof(GLfloat)*16);
+	memcpy(&squares_black[index_black], trans, sizeof(GLfloat)*16);
 	index_black+=16;
       }
       i++;

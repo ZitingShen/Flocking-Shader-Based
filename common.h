@@ -35,6 +35,7 @@
 
 #define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.01
+#define SHADES_HEIGHT                 50
 
 #define RANDOMISE_V_FACTOR        60
 #define SPAWN_CUBE_LENGTH         100.0
@@ -50,7 +51,7 @@
 
 #define TOWER_HEIGHT              8000
 #define CAMERA_NEAR               2
-#define CAMERA_FAR                (TOWER_HEIGHT*2000)
+#define CAMERA_FAR                (TOWER_HEIGHT*20000)
 
 #define BG_SQUARE_SIDE            2000.0
 #define BG_SQUARE_NUM             97   // must be an odd number
