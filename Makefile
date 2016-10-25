@@ -27,7 +27,7 @@ my_matrix.o: my_matrix.cc my_matrix.h
 list.o: list.cc list.h
 	$(CC) $(CFLAGS) -c list.cc
 
-boid.o: boid.cc boid.h
+boid.o: boid.cc boid.h common.h
 	$(CC) $(CFLAGS) -c boid.cc
 
 view.o: view.cc view.h

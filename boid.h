@@ -6,7 +6,8 @@
 #include "common.h"
 #include "gl_replacement.h"
 #include <time.h>
-
+#include <limits>
+#include <algorithm>
 
 const vec4 SPAWN_POSITION_I(1000.0, 1000.0, 3000.0, 1);
 const vec4 SPAWN_POSITION_II(-1000.0, -1000.0, 3000.0, 1);
@@ -25,7 +26,8 @@ const float COLLIDING  = 0.2 * PARTNER_RADIUS; // too close to partner
 const float FLOCK_RAIUS_CAP = 10 * BOID_SIZE;
 const float APPROACHING_GOAL = GOAL_SIZE * 20.0;
 const float Z_SPEED_CAP = 20;
-const float BOID_SPEED_FLOOR = 100;
+const float BOID_SPEED_FLOOR = 55;
+const float PREDATOR_SPEED_CAP = 300;
 
 typedef struct _boid{
   GLfloat wing_rotation;          // for flapping extra credit
@@ -57,6 +59,8 @@ vec4 get_u(List* a_flock, GOAL* a_goal, int flock_index);
 float get_d(List* a_flock, GOAL* a_goal, int flock_index);
 float flock_radius(List* a_flock, int flock_index);
 
+vec4 get_average_v(List* a_flock, int flock_index);
+
 void add_a_boid(List* a_flock);
 void remove_a_boid(List* a_flock);
 
@@ -69,8 +73,8 @@ void print_flock(List* a_flock);
 /* To DO */
 
 PREDATOR* create_a_predator(List* a_flock, GOAL* a_goal, bool& guardian);
-void move_predator(PREDATOR* a_predator, GOAL* a_goal);
-void draw_predator(PREDATOR* a_predator, bool& guardian);
+void move_predator(List* a_flock, PREDATOR* a_predator, GOAL* a_goal, bool& guardian);
+void draw_predator(PREDATOR* a_predator, bool& guardian, GLfloat mv_mat[]);
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, bool& guardian);
 void delete_predator(PREDATOR* a_predator, bool& guardian);
 

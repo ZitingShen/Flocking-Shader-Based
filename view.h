@@ -13,7 +13,7 @@ const float CHESS_BOARD_COLOUR_Y[3] = {0.0, 0.0, 0.0};     //black
 
 typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 
-void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal);
+void change_view(GLfloat mv_mat[], viewMode viewmode, List *flock, GOAL *goal, int index);
 
 void update_background(GLfloat squares_grey[], GLfloat squares_black[],
 		     GLfloat mv_mat[]);

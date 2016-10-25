@@ -20,18 +20,18 @@
 #define RADIAN_TO_DEGREE          57.29578 // 180 over pi
 #define	DEGREE_TO_RADIAN		  0.00873
 
-#define PARTNER_RADIUS            200
+#define PARTNER_RADIUS            300
 #define DEFAULT_FLOCK_SIZE        100
 #define DEFAULT_FLOCK_NUM         2
 #define MIN_FLOCK_RADIUS	      2000.0
 #define MAX_FLOCK_RADIUS		  3000.0
 
 #define SEPARATION_WEIGHT         ((float) 0.002)
-#define ALIGNMENT_WEIGHT          ((float) 0.001)
+#define ALIGNMENT_WEIGHT          ((float) 0.0008)
 #define COHESION_WEIGHT           ((float) 0.0015)
-#define ATTRACTION_WEIGHT         ((float) 0.05)
+#define ATTRACTION_WEIGHT         ((float) 0.0005)
 #define STAY_IN_FLOCK_WEIGHT	  ((float) 0.003)
-#define DETERRENCE_WEIGHT         ((float) 0.05) // the most significant weight
+#define DETERRENCE_WEIGHT         ((float) 0.1) // the most significant weight
 
 #define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.01

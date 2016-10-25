@@ -1,5 +1,4 @@
 #include "boid.h"
-#include <algorithm>
 
 using namespace std;
 
@@ -86,8 +85,8 @@ void update_velocity(List* a_flock, GOAL* a_goal){
           }
           if(close_to_goal){// if close to goal, scatter
             //cout << "now near goal" << endl;
-            s_modifier = s_modifier * 1.5;
-            a_modifier = a_modifier * 0.8;
+            s_modifier = s_modifier * 1.1;;
+            a_modifier = a_modifier * 0.9;;
           } 
         } else {
           num_of_boids_other_flocks++;
@@ -98,8 +97,8 @@ void update_velocity(List* a_flock, GOAL* a_goal){
     }
     if (num_of_partners != 0) {
       //cout << "num_of_partners = " << num_of_partners << endl;
-      s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners);
-      a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT;
+      s_modifier = s_modifier*(SEPARATION_WEIGHT/(float)num_of_partners)*1.8;
+      a_modifier = (a_modifier*(1/(float)num_of_partners) - source->velocity)*ALIGNMENT_WEIGHT*0.8;
       c_modifier = (c_modifier*(1/(float)num_of_partners) - source->pos)*COHESION_WEIGHT;
       source->velocity += s_modifier + a_modifier + c_modifier;
     }
@@ -181,6 +180,23 @@ float get_d(List* a_flock, GOAL* a_goal, int flock_index){
   return distance(flock_centroid(a_flock, flock_index), a_goal->pos);
 }
 
+vec4 get_average_v(List* a_flock, int flock_index){
+  NODE* current=a_flock->head;
+  BOID* a_boid = NULL;
+  int count = 0;
+  vec4 average_v(0,0,0,0);
+  while(current!= NULL){
+    a_boid = (BOID*)(current->data);
+    if (a_boid->flock_index == flock_index){
+      average_v += a_boid->velocity;
+      count++;
+    }
+    current = current->next;
+  }
+  average_v = average_v * (1.0f / count);
+  return average_v;
+}
+
 float flock_radius(List* a_flock, int flock_index){
   if (a_flock == NULL || a_flock->length == 0)
     return 0;
@@ -254,21 +270,23 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
     v_modifier = a_goal->pos - a_boid->pos;
     dis_to_goal = length(v_modifier);
     max_attraction = 0.6*length(a_boid->velocity);
+
+    v_modifier = v_modifier*ATTRACTION_WEIGHT;
     if (APPROACHING_GOAL<dis_to_goal){ // not near the goal
-      if (length(v_modifier) > max_attraction) {
-        //cout << "exceed max attraction " << endl;
-        v_modifier = normalise(v_modifier)*max_attraction;
-      }
-      v_modifier = v_modifier*ATTRACTION_WEIGHT;
       a_boid->velocity += v_modifier;
     }else{ // near goal scenario
       /* Let's slow down */
-      if (length(a_boid->velocity) > 3.0*length(a_goal->velocity)){
+      if (length(a_boid->velocity) > 3.0*length(a_goal->velocity) 
+          && length(a_boid->velocity) > BOID_SPEED_FLOOR
+          ){
+        //cout << length(a_boid->velocity) << endl;
         //cout << "slowing down" << endl;
-        a_boid->velocity = a_boid->velocity * 0.99;
+        a_boid->velocity = a_boid->velocity * 0.95;
+        a_boid->velocity += v_modifier;
       }
     }
     if (length(a_boid->velocity) > 4.0*length(a_goal->velocity)){
+      a_boid->velocity += v_modifier;
       //cout << "applying absolute cap" << endl;
       if(length(a_boid->velocity) > BOID_SPEED_FLOOR){
         a_boid->velocity = normalise(a_boid->velocity) * 4.0*length(a_goal->velocity);
@@ -290,24 +308,59 @@ void print_flock(List* a_flock) {
 }
 
 PREDATOR* create_a_predator(List* a_flock, GOAL* a_goal, bool& guardian){
+  if (guardian){ // only create if only already exists
+    return NULL;
+  }
+  guardian = true;
   PREDATOR* a_predator = new PREDATOR;
   a_predator->pos = (a_goal->pos + (flock_centroid(a_flock, 0) + flock_centroid(a_flock, 1)) * 0.5) * 0.5;
   a_predator->velocity = a_goal->velocity;
-  a_predator->deterrence_range = 1000;
-  guardian = true; // enable predator
+  a_predator->deterrence_range = 5000;
   return a_predator;
 }
 
-void draw_predator(PREDATOR* a_predator, bool& guardian){
+void draw_predator(PREDATOR* a_predator, bool& guardian, GLfloat mv_mat[]){
   if (!guardian){
     return;
   }
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTICES);
+  glColorPointer(3, GL_FLOAT, 0, CUBE_COLORS);
+  GLfloat mv_mat_copy[16];
+  memcpy(mv_mat_copy, mv_mat, sizeof(GLfloat)*16);
+  myTranslate(mv_mat_copy, a_predator->pos[0], a_predator->pos[1], a_predator->pos[2]);
+  glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void move_predator(PREDATOR* a_predator, GOAL* a_goal){ // orbiting the goal
-  vec4 acceleration = (a_goal->pos - a_predator->pos) * 0.1;
-  a_predator->velocity += acceleration;
+void move_predator(List* a_flock, PREDATOR* a_predator, GOAL* a_goal, bool& guardian){ // orbiting the goal
+  if (!guardian){
+    return;
+  }  
+  NODE* current=a_flock->head;
+  BOID* a_boid;
+  vec4 target_pos;
+  float nearest = std::numeric_limits<float>::max();
+  while(current != NULL){
+    a_boid = (BOID*)(current->data);
+    if (distance(a_predator->pos, a_boid->pos) < nearest){
+      nearest = distance(a_predator->pos, a_boid->pos);
+      target_pos = a_boid->pos;
+    }
+    current = current->next;
+  }
+
+  vec4 acceleration = target_pos - a_predator->pos;
+  a_predator->velocity += (acceleration * 0.008);
+
+  if (length(a_predator->velocity) > PREDATOR_SPEED_CAP){
+    a_predator->velocity = normalise(a_predator->velocity) * PREDATOR_SPEED_CAP;
+  }
+
   a_predator->pos += a_predator->velocity;
+  cout << length(a_predator->velocity) << endl;
 }
 
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, bool& guardian){

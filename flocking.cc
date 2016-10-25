@@ -2,11 +2,13 @@
 
 List* A_FLOCK = NULL;
 GOAL* A_GOAL = NULL;
+PREDATOR* A_PREDATOR = NULL;
 
 int IS_PAUSED = GLFW_FALSE;
 int PAUSE_TIME = 0;
 viewMode VIEW_MODE = DEFAULT;
 int WIDTH, HEIGHT;
+
 GLfloat SQUARES_GREY[BG_GREY_NUM*16];
 GLfloat SQUARES_BLACK[BG_BLACK_NUM*16];
 
@@ -74,13 +76,20 @@ int main(){
     glfwPollEvents();
 
     if(!IS_PAUSED || PAUSE_TIME > 0) {
-      change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL);
+
+      change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL, INDEX);
       update_background(SQUARES_GREY, SQUARES_BLACK, MV_MAT);
+
       update_goal_velocity(A_GOAL);
       update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK, A_GOAL);
       update_wing_rotation(A_FLOCK);
+
+      move_predator( A_FLOCK,A_PREDATOR, A_GOAL, GUARDIAN);
+      apply_predator_deterrence(A_FLOCK, A_PREDATOR, GUARDIAN);
+
       apply_goal_attraction(A_FLOCK, A_GOAL);
+        
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         glGetFloatv(GL_MODELVIEW_MATRIX, MV_MAT);
@@ -216,11 +225,18 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL);
+  change_view(MV_MAT, VIEW_MODE, A_FLOCK, A_GOAL, INDEX);
 }
 
 void cleanup(){
   free(A_GOAL);
+<<<<<<< HEAD
+=======
+  if (GUARDIAN){
+    delete A_PREDATOR;
+  }
+  //free(AN_OBSTACLE);
+>>>>>>> 9c162a063652591bcd3ff9be90cb66d77a087cfc
   list_destroy(A_FLOCK);
 }
 
@@ -268,23 +284,32 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
       break;
 
       case GLFW_KEY_D:
-      A_GOAL->MOVE_ALONG_X_POSITIVE = true;
+        A_GOAL->MOVE_ALONG_X_POSITIVE = true;
       break;
 
       case GLFW_KEY_W:
-      A_GOAL->MOVE_ALONG_Y_POSITIVE = true;
+        A_GOAL->MOVE_ALONG_Y_POSITIVE = true;
       break;
 
       case GLFW_KEY_S:
-      A_GOAL->MOVE_ALONG_Y_NEGATIVE = true;
+        A_GOAL->MOVE_ALONG_Y_NEGATIVE = true;
+      break;
+
+      case GLFW_KEY_C:
+        INDEX = (INDEX == 0)?1:0;
+      break;
+
+      case GLFW_KEY_U:
+        if (!GUARDIAN){ A_PREDATOR = create_a_predator(A_FLOCK, A_GOAL, GUARDIAN);}
+        else { delete_predator(A_PREDATOR, GUARDIAN);}
       break;
 
       case GLFW_KEY_RIGHT:
-      A_GOAL->ACCELERATE = true;
+        A_GOAL->ACCELERATE = true;
       break;
 
       case GLFW_KEY_LEFT:
-      A_GOAL->DECELERATE = true;
+        A_GOAL->DECELERATE = true;
       break;
 
       case GLFW_KEY_B:
@@ -293,7 +318,7 @@ void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
       case GLFW_KEY_Q:
       case GLFW_KEY_ESCAPE:
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
       break;
       default:
       break;
